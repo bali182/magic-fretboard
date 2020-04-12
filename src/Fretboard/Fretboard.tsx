@@ -1,91 +1,67 @@
 import React, { PureComponent, ReactNode } from 'react'
+import { FretboardModel, StringModel } from './FretboardModel'
+import { fromProps, FretboardModelUtil } from './FretboadModelUtil'
 import range from 'lodash/range'
 
-const Strings = 6
-const StringWidth = 6
-const StringSpacing = 40
+export type FretboardProps = {
+  model: FretboardModel
+}
 
-const Frets = 10
-const FretWidth = 8
-const FretSpacing = 100
-
-const MarkerRadius = 20
-const MarkerString = 1
-const MarkerFret = 8
-
-const FretPadding = FretSpacing / 6
-const StringPadding = MarkerRadius
-
-export class Fretboard extends PureComponent {
+export class Fretboard extends PureComponent<FretboardProps> {
   render() {
+    const util = fromProps(this)
     return (
-      <svg
-        width={this.getWidth()}
-        height={this.getHeight()}
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ border: '1px solid green' }}>
-        {this.renderFrets()}
-        {this.renderStrings()}
-        {this.renderMarker()}
+      <svg width={util.getViewportWidth()} height={util.getViewportHeight()} xmlns="http://www.w3.org/2000/svg">
+        {this.renderFrets(util)}
+        {this.renderNut(util)}
+        {this.renderStrings(util)}
+        {this.renderMarkers(util)}
       </svg>
     )
   }
 
-  // TODO calculate dots
-  private getHeight() {
-    const overhang = StringWidth
-    return (Strings - 1) * StringSpacing + overhang + StringPadding * 2
+  renderStrings(util: FretboardModelUtil): ReactNode {
+    const { model } = this.props
+    return model.strings.map(this.renderString(util))
   }
 
-  private getWidth() {
-    const baseWidth = (Frets - 1) * FretSpacing + FretWidth
-    return baseWidth + FretPadding * 2
+  renderFrets(util: FretboardModelUtil): ReactNode {
+    if (util.isNutVisible()) {
+      return range(1, util.getFretCount() + 1).map((index) => this.renderFretWire(util, index))
+    }
+    return range(0, util.getFretCount() + 1).map((index) => this.renderFretWire(util, index))
   }
 
-  renderStrings(): ReactNode {
-    return range(0, Strings).map((i) => this.renderString(i))
+  renderString = (util: FretboardModelUtil) => (strModel: StringModel): ReactNode => {
+    const x1 = util.getStringX1(strModel)
+    const x2 = util.getStringX2(strModel)
+    const y = util.getStringY(strModel)
+    return <line stroke="#6c6c6c" x1={x1} x2={x2} y1={y} y2={y} strokeWidth={strModel.thickness} key={strModel.id} />
   }
 
-  renderFrets(): ReactNode {
-    return range(0, Frets).map((i) => this.renderFret(i))
+  renderFretWire = (util: FretboardModelUtil, index: number) => {
+    const { model } = this.props
+    const x = util.getFretWireX(index)
+    const y1 = util.getFretWireY1(index)
+    const y2 = util.getFretWireY2(index)
+    return <line stroke="lightgray" x1={x} x2={x} y1={y1} y2={y2} strokeWidth={model.fretWireWidth} key={index} />
   }
 
-  renderString(num: number): ReactNode {
-    const halfStrWidth = StringWidth / 2
-    const x1 = halfStrWidth
-    const x2 = this.getWidth() - halfStrWidth
-    const y = halfStrWidth + num * StringSpacing + StringPadding
-    return (
-      <line
-        stroke="#6c6c6c"
-        x1={x1}
-        x2={x2}
-        y1={y}
-        y2={y}
-        strokeWidth={StringWidth}
-        strokeLinecap="round"
-        key={num}
-        cursor="pointer"
-        onClick={() => {
-          console.log('clicked on str')
-        }}
-      />
-    )
+  renderNut = (util: FretboardModelUtil) => {
+    if (!util.isNutVisible()) {
+      return null
+    }
+    const { model } = this.props
+    const x = util.getNutX()
+    const y1 = util.getNutY1()
+    const y2 = util.getNutY2()
+    return <line stroke="#6c6c6c" x1={x} x2={x} y1={y1} y2={y2} strokeWidth={model.nutWidth} key="nut" />
   }
 
-  renderFret(num: number) {
-    const halfFretWidth = FretWidth / 2
-    const y1 = halfFretWidth + StringPadding
-    const y2 = this.getHeight() - halfFretWidth - StringPadding
-    const x = FretPadding + halfFretWidth + num * FretSpacing
-    return (
-      <line stroke="lightgray" x1={x} x2={x} y1={y1} y2={y2} strokeWidth={FretWidth} strokeLinecap="round" key={num} />
-    )
-  }
-
-  renderMarker() {
-    const cx = MarkerFret * FretSpacing - FretSpacing / 2 + FretPadding
+  renderMarkers(util: FretboardModelUtil) {
+    /*const cx = MarkerFret * FretSpacing - FretSpacing / 2 + FretPadding
     const cy = MarkerString * StringSpacing + StringPadding
-    return <circle fill="#27a9e1" cx={cx} cy={cy} r={MarkerRadius} />
+    return <circle fill="#27a9e1" cx={cx} cy={cy} r={MarkerRadius} />*/
+    return null
   }
 }

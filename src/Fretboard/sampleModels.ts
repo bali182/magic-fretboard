@@ -1,16 +1,5 @@
-import { FretModel, StringModel, MarkerModel, MarkerKind, FretboardModel } from './FretboardModel'
-import range from 'lodash/range'
+import { StringModel, MarkerModel, MarkerKind, FretboardModel } from './FretboardModel'
 import { nanoid } from 'nanoid'
-
-const frets = range(1, 6).map(
-  (index): FretModel => ({
-    id: nanoid(),
-    type: 'fret',
-    width: 80,
-    thickness: 8,
-    label: index.toString(),
-  })
-)
 
 const strings = ['E6', 'A', 'D', 'G', 'B', 'E1'].map(
   (string): StringModel => ({
@@ -24,41 +13,42 @@ const strings = ['E6', 'A', 'D', 'G', 'B', 'E1'].map(
 const firstMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
-  fretId: frets[3].id,
+  fret: 3,
   stringId: strings[3].id,
   kind: MarkerKind.Pimary,
   label: '1',
-  radius: 20,
 }
 
 const secondMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
-  fretId: frets[2].id,
+  fret: 1,
   stringId: strings[0].id,
   kind: MarkerKind.Default,
   label: '2',
-  radius: 20,
 }
 
 const thirdMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
-  fretId: frets[5].id,
+  fret: 2,
   stringId: strings[5].id,
   kind: MarkerKind.Secondary,
   label: '3',
-  radius: 20,
 }
 
 const markers = [firstMarker, secondMarker, thirdMarker]
 
 export const model: FretboardModel = {
   type: 'fretboard',
-  frets,
   strings,
   markers,
-  hasNut: true,
   stringOverhang: 20,
   stringSpacing: 40,
+  nutWidth: 10,
+  firstVisibleFret: 0,
+  lastVisibleFret: 5,
+  fretWidth: 100,
+  fretWireWidth: 8,
+  markerRadius: 20,
 }

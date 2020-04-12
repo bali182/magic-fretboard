@@ -9,9 +9,8 @@ export type MarkerModel = {
   type: 'marker'
   id: string
   label: string
-  fretId: string
+  fret: number
   stringId: string
-  radius: number
   kind: MarkerKind
 }
 
@@ -21,20 +20,17 @@ export type StringModel = {
   label?: string
   thickness: number
 }
-export type FretModel = {
-  type: 'fret'
-  id: string
-  label?: string
-  width: number
-  thickness: number
-}
 
 export type FretboardModel = {
   type: 'fretboard'
   strings: StringModel[]
-  frets: FretModel[]
   markers: MarkerModel[]
-  hasNut: boolean
+  firstVisibleFret: number
+  lastVisibleFret: number
+  fretWidth: number
+  fretWireWidth: number
+  nutWidth: number
   stringSpacing: number
   stringOverhang: number
+  markerRadius: number
 }
