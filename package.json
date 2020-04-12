@@ -6,7 +6,7 @@
   "license": "MIT",
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run build && git add docs"
+      "_pre-commit": "yarn run build && git add docs"
     }
   },
   "scripts": {
