@@ -1,4 +1,4 @@
-import { FretboardModel, StringModel } from './FretboardModel'
+import { FretboardModel, StringModel, MarkerModel } from './FretboardModel'
 import { Fretboard } from './Fretboard'
 import range from 'lodash/range'
 import head from 'lodash/head'
@@ -93,12 +93,23 @@ export class FretboardModelUtil {
     // TODO
     return this.getViewportHeight()
   }
+
+  getMarkerX(marker: MarkerModel): number {
+    const fretsWidth = (marker.fret - this.model.firstVisibleFret - 1) * this.model.fretWidth
+    const halfFretWidthToCenter = this.model.fretWidth / 2
+    const nutWidth = this.isNutVisible() ? this.model.nutWidth : 0
+    const startOverhangWidth = this.isNutVisible() ? 0 : this.model.stringOverhang
+    return fretsWidth + halfFretWidthToCenter + nutWidth + startOverhangWidth
+  }
+
+  getMarkerY(marker: MarkerModel): number {
+    const stringIndex = this.model.strings.findIndex((string) => string.id === marker.stringId)
+    const singingsHeight = stringIndex * this.model.stringSpacing
+    const topOverhang = head(this.model.strings).thickness / 2
+    return singingsHeight + topOverhang
+  }
 }
 
 export function from(model: FretboardModel): FretboardModelUtil {
   return new FretboardModelUtil(model)
-}
-
-export function fromProps(fretboard: Fretboard): FretboardModelUtil {
-  return from(fretboard.props.model)
 }

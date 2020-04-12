@@ -10,13 +10,22 @@ const strings = ['E6', 'A', 'D', 'G', 'B', 'E1'].map(
   })
 )
 
+const zeroMarker: MarkerModel = {
+  type: 'marker',
+  id: nanoid(),
+  fret: 0,
+  stringId: strings[4].id,
+  kind: MarkerKind.Secondary,
+  label: '0',
+}
+
 const firstMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
   fret: 3,
   stringId: strings[3].id,
   kind: MarkerKind.Pimary,
-  label: '1',
+  label: '3',
 }
 
 const secondMarker: MarkerModel = {
@@ -25,7 +34,7 @@ const secondMarker: MarkerModel = {
   fret: 1,
   stringId: strings[0].id,
   kind: MarkerKind.Default,
-  label: '2',
+  label: '1',
 }
 
 const thirdMarker: MarkerModel = {
@@ -34,10 +43,10 @@ const thirdMarker: MarkerModel = {
   fret: 2,
   stringId: strings[5].id,
   kind: MarkerKind.Secondary,
-  label: '3',
+  label: '2',
 }
 
-const markers = [firstMarker, secondMarker, thirdMarker]
+const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]
 
 export const model: FretboardModel = {
   type: 'fretboard',
