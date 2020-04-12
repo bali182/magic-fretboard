@@ -11,6 +11,14 @@ export class FretboardModelUtil {
     this.model = model
   }
 
+  private getTopOverhang(): number {
+    return Math.max(head(this.model.strings).thickness / 2, this.model.markerRadius)
+  }
+
+  private getBottomOverhang(): number {
+    return Math.max(last(this.model.strings).thickness / 2, this.model.markerRadius)
+  }
+
   getViewportWidth(): number {
     const fretCount = this.getFretCount()
     // No frets provided, nothing to do here
@@ -35,13 +43,13 @@ export class FretboardModelUtil {
       return 0
     }
     const stringsHeight = (stringsCount - 1) * this.model.stringSpacing
-    const topOverhang = head(this.model.strings).thickness / 2
-    const bottomOverhang = last(this.model.strings).thickness / 2
+    const topOverhang = this.getTopOverhang()
+    const bottomOverhang = this.getBottomOverhang()
     return stringsHeight + topOverhang + bottomOverhang
   }
 
   getStringY(string: StringModel): number {
-    const topOverhang = head(this.model.strings).thickness / 2
+    const topOverhang = this.getTopOverhang()
 
     const index = this.model.strings.indexOf(string)
     const basePosition = this.model.stringSpacing * index
@@ -70,11 +78,10 @@ export class FretboardModelUtil {
     return baseXPosition + nutWidth + startOverhangWidth
   }
   getFretWireY1(fretIndex: number): number {
-    // TODO
-    return 0
+    return this.getTopOverhang()
   }
   getFretWireY2(fretIndex: number): number {
-    return this.getViewportHeight()
+    return this.getViewportHeight() - this.getBottomOverhang()
   }
 
   isNutVisible(): boolean {
@@ -87,11 +94,11 @@ export class FretboardModelUtil {
   }
   getNutY1(): number {
     // TODO
-    return 0
+    return this.getTopOverhang()
   }
   getNutY2(): number {
     // TODO
-    return this.getViewportHeight()
+    return this.getViewportHeight() - this.getBottomOverhang()
   }
 
   getMarkerX(marker: MarkerModel): number {
@@ -105,7 +112,7 @@ export class FretboardModelUtil {
   getMarkerY(marker: MarkerModel): number {
     const stringIndex = this.model.strings.findIndex((string) => string.id === marker.stringId)
     const singingsHeight = stringIndex * this.model.stringSpacing
-    const topOverhang = head(this.model.strings).thickness / 2
+    const topOverhang = this.getTopOverhang()
     return singingsHeight + topOverhang
   }
 }

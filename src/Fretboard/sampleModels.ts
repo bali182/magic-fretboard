@@ -54,10 +54,10 @@ export const model: FretboardModel = {
   markers,
   stringOverhang: 20,
   stringSpacing: 40,
-  nutWidth: 10,
+  nutWidth: 15,
   firstVisibleFret: 0,
   lastVisibleFret: 5,
-  fretWidth: 100,
+  fretWidth: 80,
   fretWireWidth: 8,
   markerRadius: 20,
 }
