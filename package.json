@@ -16,6 +16,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
     "@types/classnames": "^2.2.9",
     "@types/lodash": "^4.14.144",
     "@types/react-router-dom": "^5.1.0",

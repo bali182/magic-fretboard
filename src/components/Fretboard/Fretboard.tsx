@@ -1,5 +1,5 @@
-import React, { PureComponent, ReactNode, Fragment } from 'react'
-import { FretboardModel, StringModel, MarkerModel, FretboardTheme, MarkerShape } from './FretboardModel'
+import React, { PureComponent, ReactNode } from 'react'
+import { FretboardModel, StringModel, FretboardTheme } from './FretboardModel'
 import { FretboardModelUtil } from './FretboadModelUtil'
 import range from 'lodash/range'
 import { Marker } from './Marker'
@@ -15,7 +15,7 @@ export class Fretboard extends PureComponent<FretboardProps> {
     const { model, theme } = this.props
     const util = new FretboardModelUtil(model, theme)
     const __temporaryStyle: React.CSSProperties = {
-      border: '1px solid black',
+      // border: '1px solid black',
     }
     return (
       <svg
