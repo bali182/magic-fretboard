@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Fretboard } from './Fretboard/Fretboard'
-import { sampleModel } from './Fretboard/sampleModel'
-import { defaultTheme } from './Fretboard/defaultTheme'
+import { Fretboard } from './components/Fretboard/Fretboard'
+import { sampleModel } from './components/Fretboard/sampleModel'
+import { defaultTheme } from './state/defaultTheme'
 
 render(
   <div style={{ padding: '20px' }}>
