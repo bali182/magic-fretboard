@@ -1,17 +1,26 @@
 import React, { PureComponent, ReactNode } from 'react'
-import { FretboardModel, StringModel, MarkerModel } from './FretboardModel'
-import { from, FretboardModelUtil } from './FretboadModelUtil'
+import { FretboardModel, StringModel, MarkerModel, FretboardTheme } from './FretboardModel'
+import { FretboardModelUtil } from './FretboadModelUtil'
 import range from 'lodash/range'
 
 export type FretboardProps = {
   model: FretboardModel
+  theme: FretboardTheme
 }
 
 export class Fretboard extends PureComponent<FretboardProps> {
   render() {
-    const util = from(this.props.model)
+    const { model, theme } = this.props
+    const util = new FretboardModelUtil(model, theme)
+    const style: React.CSSProperties = {
+      border: '1px solid black',
+    }
     return (
-      <svg width={util.getViewportWidth()} height={util.getViewportHeight()} xmlns="http://www.w3.org/2000/svg">
+      <svg
+        style={style}
+        width={util.getViewportWidth()}
+        height={util.getViewportHeight()}
+        xmlns="http://www.w3.org/2000/svg">
         {this.renderFrets(util)}
         {this.renderNut(util)}
         {this.renderStrings(util)}
@@ -64,17 +73,15 @@ export class Fretboard extends PureComponent<FretboardProps> {
     if (!util.isNutVisible()) {
       return null
     }
-    const { model } = this.props
+    const theme = util.getTheme()
     const x = util.getNutX()
     const y1 = util.getNutY1()
     const y2 = util.getNutY2()
-    return (
-      <line stroke={model.theme.nutColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={model.theme.nutWidth} key="nut" />
-    )
+    return <line stroke={theme.nutColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={theme.nutWidth} key="nut" />
   }
 
   renderMarkers(util: FretboardModelUtil) {
-    const { model } = this.props
+    const model = util.getModel()
     return model.markers.map(this.renderMarker(util))
   }
 
@@ -82,14 +89,18 @@ export class Fretboard extends PureComponent<FretboardProps> {
     const x = util.getMarkerX(marker)
     const y = util.getMarkerY(marker)
     const fill = util.getMarkerFill(marker)
+    const stroke = util.getMarkerStroke(marker)
     const theme = util.getTheme()
+    const radius = util.getMarkerRadius(marker)
+    const strokeWidth = util.getMarkerStrokeWidth(marker)
+
     return (
-      <React.Fragment>
-        <circle fill={fill} cx={x} cy={y} r={theme.markerRadius} />
+      <g>
+        <circle fill={fill} cx={x} cy={y} r={radius} stroke={stroke} strokeWidth={strokeWidth} />
         <text x={x} y={y} fill="white" fontSize={20} textAnchor="middle" alignmentBaseline="central">
           {marker.label}
         </text>
-      </React.Fragment>
+      </g>
     )
   }
 }

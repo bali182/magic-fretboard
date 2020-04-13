@@ -29,6 +29,8 @@ export type FretboardTheme = {
   stringSpacing: number
   stringOverhang: number
   markerRadius: number
+  hollowMarkerOutlineWidth: number
+  markerToNutSpace: number
   // Colors
   nutColor: string
   fretWireColor: string
@@ -45,5 +47,4 @@ export type FretboardModel = {
   markers: MarkerModel[]
   firstVisibleFret: number
   lastVisibleFret: number
-  theme: FretboardTheme
 }

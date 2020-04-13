@@ -48,13 +48,16 @@ const thirdMarker: MarkerModel = {
 
 const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]
 
-const defaultTheme: FretboardTheme = {
+export const defaultTheme: FretboardTheme = {
   stringOverhang: 20,
   stringSpacing: 40,
   nutWidth: 15,
   fretWidth: 80,
   fretWireWidth: 8,
-  markerRadius: 20,
+  markerRadius: 30,
+  markerToNutSpace: 10,
+  hollowMarkerOutlineWidth: 8,
+
   stringColor: '#6c6c6c',
   nutColor: '#6c6c6c',
   fretWireColor: '#999999',
@@ -64,11 +67,10 @@ const defaultTheme: FretboardTheme = {
   secondaryMarkerColor: 'rgba(39, 169, 225, 0.5)',
 }
 
-export const model: FretboardModel = {
+export const defaultModel: FretboardModel = {
   type: 'fretboard',
   strings,
   markers,
   firstVisibleFret: 0,
   lastVisibleFret: 5,
-  theme: defaultTheme,
 }
