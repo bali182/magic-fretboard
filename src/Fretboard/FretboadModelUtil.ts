@@ -1,25 +1,56 @@
-import { FretboardModel, StringModel, MarkerModel } from './FretboardModel'
-import { Fretboard } from './Fretboard'
-import range from 'lodash/range'
+import { FretboardModel, StringModel, MarkerModel, MarkerKind, FretboardTheme } from './FretboardModel'
 import head from 'lodash/head'
 import last from 'lodash/last'
+import isNil from 'lodash/isNil'
 
 export class FretboardModelUtil {
   private model: FretboardModel
 
   constructor(model: FretboardModel) {
+    if (isNil(model)) {
+      throw new TypeError('model null or undefined')
+    }
     this.model = model
   }
 
   private getTopOverhang(): number {
-    return Math.max(head(this.model.strings).thickness / 2, this.model.markerRadius)
+    const model = this.getModel()
+    const theme = this.getTheme()
+    return Math.max(head(model.strings).thickness / 2, theme.markerRadius)
   }
 
   private getBottomOverhang(): number {
-    return Math.max(last(this.model.strings).thickness / 2, this.model.markerRadius)
+    const model = this.getModel()
+    const theme = this.getTheme()
+    return Math.max(last(model.strings).thickness / 2, theme.markerRadius)
+  }
+
+  private getMarkerKindColor(kind: MarkerKind): string {
+    const theme = this.getTheme()
+
+    switch (kind) {
+      case MarkerKind.Default:
+        return theme.defaultMarkerColor
+      case MarkerKind.Muted:
+        return theme.mutedMarkerColor
+      case MarkerKind.Pimary:
+        return theme.primaryMarkerColor
+      case MarkerKind.Secondary:
+        return theme.secondaryMarkerColor
+    }
+  }
+
+  getModel(): FretboardModel {
+    return this.model
+  }
+
+  getTheme(): FretboardTheme {
+    return this.getModel().theme
   }
 
   getViewportWidth(): number {
+    const theme = this.getTheme()
+
     const fretCount = this.getFretCount()
     // No frets provided, nothing to do here
     if (fretCount <= 0) {
@@ -28,31 +59,36 @@ export class FretboardModelUtil {
 
     const isNutVisible = this.isNutVisible()
 
-    const fretsWidth = fretCount * this.model.fretWidth
-    const endOverhangWidth = this.model.stringOverhang
-    const startOverhangWidth = isNutVisible ? 0 : this.model.stringOverhang
-    const nutWidth = this.model.nutWidth
+    const fretsWidth = fretCount * theme.fretWidth
+    const endOverhangWidth = theme.stringOverhang
+    const startOverhangWidth = isNutVisible ? 0 : theme.stringOverhang
+    const nutWidth = theme.nutWidth
 
     return fretsWidth + startOverhangWidth + nutWidth + endOverhangWidth
   }
 
   getViewportHeight(): number {
+    const theme = this.getTheme()
+
     const stringsCount = this.getStringsCount()
     // No strings provided nothing to do here
     if (stringsCount === 0) {
       return 0
     }
-    const stringsHeight = (stringsCount - 1) * this.model.stringSpacing
+    const stringsHeight = (stringsCount - 1) * theme.stringSpacing
     const topOverhang = this.getTopOverhang()
     const bottomOverhang = this.getBottomOverhang()
     return stringsHeight + topOverhang + bottomOverhang
   }
 
   getStringY(string: StringModel): number {
+    const model = this.getModel()
+    const theme = this.getTheme()
+
     const topOverhang = this.getTopOverhang()
 
-    const index = this.model.strings.indexOf(string)
-    const basePosition = this.model.stringSpacing * index
+    const index = model.strings.indexOf(string)
+    const basePosition = theme.stringSpacing * index
     return topOverhang + basePosition
   }
   getStringX1(string: StringModel): number {
@@ -65,16 +101,22 @@ export class FretboardModelUtil {
   }
 
   getFretCount(): number {
-    return this.model.lastVisibleFret - this.model.firstVisibleFret
+    const model = this.getModel()
+
+    return model.lastVisibleFret - model.firstVisibleFret
   }
   getStringsCount(): number {
-    return this.model.strings.length
+    const model = this.getModel()
+
+    return model.strings.length
   }
 
   getFretWireX(fret: number): number {
-    const baseXPosition = fret * this.model.fretWidth
-    const nutWidth = this.isNutVisible() ? this.model.nutWidth : 0
-    const startOverhangWidth = this.isNutVisible() ? 0 : this.model.stringOverhang
+    const theme = this.getTheme()
+
+    const baseXPosition = fret * theme.fretWidth
+    const nutWidth = this.isNutVisible() ? theme.nutWidth : 0
+    const startOverhangWidth = this.isNutVisible() ? 0 : theme.stringOverhang
     return baseXPosition + nutWidth + startOverhangWidth
   }
   getFretWireY1(fretIndex: number): number {
@@ -85,12 +127,16 @@ export class FretboardModelUtil {
   }
 
   isNutVisible(): boolean {
-    return this.model.firstVisibleFret === 0
+    const model = this.getModel()
+
+    return model.firstVisibleFret === 0
   }
 
   getNutX(): number {
     // TODO
-    return this.model.nutWidth / 2
+    const theme = this.getTheme()
+
+    return theme.nutWidth / 2
   }
   getNutY1(): number {
     // TODO
@@ -102,18 +148,31 @@ export class FretboardModelUtil {
   }
 
   getMarkerX(marker: MarkerModel): number {
-    const fretsWidth = (marker.fret - this.model.firstVisibleFret - 1) * this.model.fretWidth
-    const halfFretWidthToCenter = this.model.fretWidth / 2
-    const nutWidth = this.isNutVisible() ? this.model.nutWidth : 0
-    const startOverhangWidth = this.isNutVisible() ? 0 : this.model.stringOverhang
+    const model = this.getModel()
+    const theme = this.getTheme()
+
+    const fretsWidth = (marker.fret - model.firstVisibleFret - 1) * theme.fretWidth
+    const halfFretWidthToCenter = theme.fretWidth / 2
+    const nutWidth = this.isNutVisible() ? theme.nutWidth : 0
+    const startOverhangWidth = this.isNutVisible() ? 0 : theme.stringOverhang
     return fretsWidth + halfFretWidthToCenter + nutWidth + startOverhangWidth
   }
 
   getMarkerY(marker: MarkerModel): number {
-    const stringIndex = this.model.strings.findIndex((string) => string.id === marker.stringId)
-    const singingsHeight = stringIndex * this.model.stringSpacing
+    const model = this.getModel()
+    const theme = this.getTheme()
+
+    const stringIndex = model.strings.findIndex((string) => string.id === marker.stringId)
+    const singingsHeight = stringIndex * theme.stringSpacing
     const topOverhang = this.getTopOverhang()
     return singingsHeight + topOverhang
+  }
+
+  getMarkerFill(marker: MarkerModel): string {
+    if (marker.fret === 0 || marker.kind === MarkerKind.Muted) {
+      return null
+    }
+    return this.getMarkerKindColor(marker.kind)
   }
 }
 

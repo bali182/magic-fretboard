@@ -1,4 +1,4 @@
-import { StringModel, MarkerModel, MarkerKind, FretboardModel } from './FretboardModel'
+import { StringModel, MarkerModel, MarkerKind, FretboardModel, FretboardTheme } from './FretboardModel'
 import { nanoid } from 'nanoid'
 
 const strings = ['E6', 'A', 'D', 'G', 'B', 'E1'].map(
@@ -48,16 +48,27 @@ const thirdMarker: MarkerModel = {
 
 const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]
 
+const defaultTheme: FretboardTheme = {
+  stringOverhang: 20,
+  stringSpacing: 40,
+  nutWidth: 15,
+  fretWidth: 80,
+  fretWireWidth: 8,
+  markerRadius: 20,
+  stringColor: '#6c6c6c',
+  nutColor: '#6c6c6c',
+  fretWireColor: '#999999',
+  defaultMarkerColor: '#27a9e1',
+  primaryMarkerColor: '#D66853',
+  mutedMarkerColor: '#999999',
+  secondaryMarkerColor: 'rgba(39, 169, 225, 0.5)',
+}
+
 export const model: FretboardModel = {
   type: 'fretboard',
   strings,
   markers,
-  stringOverhang: 20,
-  stringSpacing: 40,
-  nutWidth: 15,
   firstVisibleFret: 0,
   lastVisibleFret: 5,
-  fretWidth: 80,
-  fretWireWidth: 8,
-  markerRadius: 20,
+  theme: defaultTheme,
 }

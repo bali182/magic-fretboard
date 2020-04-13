@@ -21,16 +21,29 @@ export type StringModel = {
   thickness: number
 }
 
-export type FretboardModel = {
-  type: 'fretboard'
-  strings: StringModel[]
-  markers: MarkerModel[]
-  firstVisibleFret: number
-  lastVisibleFret: number
+export type FretboardTheme = {
+  // Dimensions
   fretWidth: number
   fretWireWidth: number
   nutWidth: number
   stringSpacing: number
   stringOverhang: number
   markerRadius: number
+  // Colors
+  nutColor: string
+  fretWireColor: string
+  stringColor: string
+  defaultMarkerColor: string
+  primaryMarkerColor: string
+  secondaryMarkerColor: string
+  mutedMarkerColor: string
+}
+
+export type FretboardModel = {
+  type: 'fretboard'
+  strings: StringModel[]
+  markers: MarkerModel[]
+  firstVisibleFret: number
+  lastVisibleFret: number
+  theme: FretboardTheme
 }
