@@ -2,6 +2,8 @@ import React, { PureComponent, ReactNode, Fragment } from 'react'
 import { FretboardModel, StringModel, MarkerModel, FretboardTheme, MarkerShape } from './FretboardModel'
 import { FretboardModelUtil } from './FretboadModelUtil'
 import range from 'lodash/range'
+import { Marker } from './Marker'
+import { MarkerDefs } from './MarkerDefs'
 
 export type FretboardProps = {
   model: FretboardModel
@@ -12,15 +14,16 @@ export class Fretboard extends PureComponent<FretboardProps> {
   render() {
     const { model, theme } = this.props
     const util = new FretboardModelUtil(model, theme)
-    const style: React.CSSProperties = {
+    const __temporaryStyle: React.CSSProperties = {
       border: '1px solid black',
     }
     return (
       <svg
-        style={style}
+        style={__temporaryStyle}
         width={util.getViewportWidth()}
         height={util.getViewportHeight()}
         xmlns="http://www.w3.org/2000/svg">
+        <MarkerDefs util={util} />
         {this.renderFrets(util)}
         {this.renderNut(util)}
         {this.renderStrings(util)}
@@ -82,58 +85,6 @@ export class Fretboard extends PureComponent<FretboardProps> {
 
   renderMarkers(util: FretboardModelUtil) {
     const model = util.getModel()
-    return model.markers.map(this.renderMarker(util))
-  }
-
-  renderMarkerCircle(util: FretboardModelUtil, marker: MarkerModel, x: number, y: number): ReactNode {
-    const fill = util.getMarkerFill(marker)
-    const stroke = util.getMarkerStroke(marker)
-    const radius = util.getMarkerRadius(marker)
-    const strokeWidth = util.getMarkerStrokeWidth(marker)
-    return <circle fill={fill} cx={x} cy={y} r={radius} stroke={stroke} strokeWidth={strokeWidth} />
-  }
-
-  renderMarkerX(util: FretboardModelUtil, marker: MarkerModel, x: number, y: number): ReactNode {
-    const fill = util.getMarkerFill(marker)
-    const stroke = util.getMarkerStroke(marker)
-    const radius = util.getMarkerRadius(marker)
-    const strokeWidth = util.getMarkerStrokeWidth(marker)
-    return <circle fill={fill} cx={x} cy={y} r={radius} stroke={stroke} strokeWidth={strokeWidth} />
-  }
-
-  renderMarkerShape(util: FretboardModelUtil, marker: MarkerModel, x: number, y: number): ReactNode {
-    const shape = util.getMarkerShape(marker)
-    return shape === MarkerShape.Circle
-      ? this.renderMarkerCircle(util, marker, x, y)
-      : this.renderMarkerX(util, marker, x, y)
-  }
-
-  renderMarkerText(util: FretboardModelUtil, marker: MarkerModel, x: number, y: number): ReactNode {
-    const fontColor = util.getMarkerFontColor(marker)
-    const fontSize = util.getMarkerFontSize(marker)
-    const fontFamily = util.getMarkerFontFamily(marker)
-    return (
-      <text
-        x={x}
-        y={y}
-        fill={fontColor}
-        fontSize={fontSize}
-        fontFamily={fontFamily}
-        textAnchor="middle"
-        alignmentBaseline="central">
-        {marker.label}
-      </text>
-    )
-  }
-
-  renderMarker = (util: FretboardModelUtil) => (marker: MarkerModel) => {
-    const x = util.getMarkerX(marker)
-    const y = util.getMarkerY(marker)
-    return (
-      <Fragment key={marker.id}>
-        {this.renderMarkerShape(util, marker, x, y)}
-        {this.renderMarkerText(util, marker, x, y)}
-      </Fragment>
-    )
+    return model.markers.map((marker) => <Marker util={util} marker={marker} key={marker.id} />)
   }
 }

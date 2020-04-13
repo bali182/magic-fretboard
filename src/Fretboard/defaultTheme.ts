@@ -25,16 +25,16 @@ const defaultMarkerTheme: MarkerTheme = {
 
 const mutedMarkerTheme: MarkerTheme = {
   shape: MarkerShape.X,
-  fillColor: '#D66853',
-  strokeColor: 'none',
+  fillColor: 'none',
+  strokeColor: '#27a9e1',
   fontColor: '#fff',
   fontSize: defaultFontSize,
   fontFamily: defautlFontFamily,
-  strokeWidth: 0,
+  strokeWidth: 10,
 }
 
 const hollowMarkerTheme: MarkerTheme = {
-  shape: MarkerShape.X,
+  shape: MarkerShape.Circle,
   fillColor: 'none',
   strokeColor: '#27a9e1',
   fontColor: '#555',

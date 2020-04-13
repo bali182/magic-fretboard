@@ -43,7 +43,7 @@ const thirdMarker: MarkerModel = {
   fret: 2,
   stringId: strings[5].id,
   kind: MarkerKind.Muted,
-  label: '2',
+  label: '',
 }
 
 const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]

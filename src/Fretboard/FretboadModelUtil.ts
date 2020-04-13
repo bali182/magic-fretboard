@@ -9,6 +9,7 @@ import {
 } from './FretboardModel'
 import head from 'lodash/head'
 import last from 'lodash/last'
+import isNil from 'lodash/isNil'
 
 export class FretboardModelUtil {
   private readonly model: FretboardModel
@@ -56,7 +57,7 @@ export class FretboardModelUtil {
     return theme.stringOverhang
   }
 
-  private getMarkerTheme(kind: MarkerKind): MarkerTheme {
+  getMarkerTheme(kind: MarkerKind): MarkerTheme {
     const theme = this.getTheme()
 
     switch (kind) {
@@ -68,6 +69,8 @@ export class FretboardModelUtil {
         return theme.primaryMarkerTheme
       case MarkerKind.Hollow:
         return theme.hollowMarkerTheme
+      default:
+        return null
     }
   }
 
@@ -178,52 +181,37 @@ export class FretboardModelUtil {
     return this.getViewportHeight() - this.getBottomOverhang()
   }
 
-  getMarkerX(marker: MarkerModel): number {
+  getMarkerX(fret: number, kind: MarkerKind): number {
     const model = this.getModel()
     const theme = this.getTheme()
+    const markerTheme = this.getMarkerTheme(kind)
 
     // Unfretted marker
-    if (marker.fret === 0) {
+    if (fret === 0) {
       return theme.markerRadius
     }
     // Fretted marker
-    const fretsWidth = (marker.fret - model.firstVisibleFret - 1) * theme.fretWidth
+    const fretsWidth = (fret - model.firstVisibleFret - 1) * theme.fretWidth
     const halfFretWidthToCenter = theme.fretWidth / 2
     const nutWidth = this.getVisibleNutWidth()
     const startOverhangWidth = this.getStartOverhang()
     const unfrettedMarkerSpace = this.getUnfrettedMarkerSpace()
-    return fretsWidth + halfFretWidthToCenter + nutWidth + startOverhangWidth + unfrettedMarkerSpace
+    const adjustment = !isNil(markerTheme) && markerTheme.shape === MarkerShape.X ? -theme.markerRadius / 2 : 0
+
+    return fretsWidth + halfFretWidthToCenter + nutWidth + startOverhangWidth + unfrettedMarkerSpace + adjustment
   }
 
-  getMarkerY(marker: MarkerModel): number {
+  getMarkerY(stringId: string, kind: MarkerKind): number {
     const model = this.getModel()
     const theme = this.getTheme()
+    const markerTheme = this.getMarkerTheme(kind)
 
-    const stringIndex = model.strings.findIndex((string) => string.id === marker.stringId)
+    const stringIndex = model.strings.findIndex((string) => string.id === stringId)
     const singingsHeight = stringIndex * theme.stringSpacing
     const topOverhang = this.getTopOverhang()
-    return singingsHeight + topOverhang
-  }
+    const adjustment = !isNil(markerTheme) && markerTheme.shape === MarkerShape.X ? -theme.markerRadius / 2 : 0
 
-  getMarkerFill(marker: MarkerModel): string {
-    const markerTheme = this.getMarkerTheme(marker.kind)
-    return markerTheme.fillColor
-  }
-
-  getMarkerStroke(marker: MarkerModel): string {
-    const markerTheme = this.getMarkerTheme(marker.kind)
-    return markerTheme.strokeColor
-  }
-
-  getMarkerStrokeWidth(marker: MarkerModel): number {
-    const markerTheme = this.getMarkerTheme(marker.kind)
-    return markerTheme.strokeWidth
-  }
-
-  getMarkerRadius(marker: MarkerModel) {
-    const theme = this.getTheme()
-    const markerTheme = this.getMarkerTheme(marker.kind)
-    return markerTheme.strokeWidth > 0 ? theme.markerRadius - markerTheme.strokeWidth / 2 : theme.markerRadius
+    return singingsHeight + topOverhang + adjustment
   }
 
   getMarkerFontSize(marker: MarkerModel): number {
@@ -239,10 +227,5 @@ export class FretboardModelUtil {
   getMarkerFontFamily(marker: MarkerModel): string {
     const markerTheme = this.getMarkerTheme(marker.kind)
     return markerTheme.fontFamily
-  }
-
-  getMarkerShape(marker: MarkerModel): MarkerShape {
-    const markerTheme = this.getMarkerTheme(marker.kind)
-    return markerTheme.shape
   }
 }
