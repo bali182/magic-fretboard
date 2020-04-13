@@ -1,17 +1,29 @@
-import React, { PureComponent, ReactNode } from 'react'
-import { FretboardModel, StringModel, MarkerModel } from './FretboardModel'
-import { from, FretboardModelUtil } from './FretboadModelUtil'
+import React, { PureComponent, ReactNode, Fragment } from 'react'
+import { FretboardModel, StringModel, MarkerModel, FretboardTheme, MarkerShape } from './FretboardModel'
+import { FretboardModelUtil } from './FretboadModelUtil'
 import range from 'lodash/range'
+import { Marker } from './Marker'
+import { MarkerDefs } from './MarkerDefs'
 
 export type FretboardProps = {
   model: FretboardModel
+  theme: FretboardTheme
 }
 
 export class Fretboard extends PureComponent<FretboardProps> {
   render() {
-    const util = from(this.props.model)
+    const { model, theme } = this.props
+    const util = new FretboardModelUtil(model, theme)
+    const __temporaryStyle: React.CSSProperties = {
+      border: '1px solid black',
+    }
     return (
-      <svg width={util.getViewportWidth()} height={util.getViewportHeight()} xmlns="http://www.w3.org/2000/svg">
+      <svg
+        style={__temporaryStyle}
+        width={util.getViewportWidth()}
+        height={util.getViewportHeight()}
+        xmlns="http://www.w3.org/2000/svg">
+        <MarkerDefs util={util} />
         {this.renderFrets(util)}
         {this.renderNut(util)}
         {this.renderStrings(util)}
@@ -21,7 +33,7 @@ export class Fretboard extends PureComponent<FretboardProps> {
   }
 
   renderStrings(util: FretboardModelUtil): ReactNode {
-    const { model } = this.props
+    const model = util.getModel()
     return model.strings.map(this.renderString(util))
   }
 
@@ -33,47 +45,46 @@ export class Fretboard extends PureComponent<FretboardProps> {
   }
 
   renderString = (util: FretboardModelUtil) => (strModel: StringModel): ReactNode => {
+    const theme = util.getTheme()
     const x1 = util.getStringX1(strModel)
     const x2 = util.getStringX2(strModel)
     const y = util.getStringY(strModel)
-    return <line stroke="#6c6c6c" x1={x1} x2={x2} y1={y} y2={y} strokeWidth={strModel.thickness} key={strModel.id} />
+    return (
+      <line
+        stroke={theme.stringColor}
+        x1={x1}
+        x2={x2}
+        y1={y}
+        y2={y}
+        strokeWidth={strModel.thickness}
+        key={strModel.id}
+      />
+    )
   }
 
   renderFretWire = (util: FretboardModelUtil) => (index: number) => {
-    const { model } = this.props
+    const theme = util.getTheme()
     const x = util.getFretWireX(index)
     const y1 = util.getFretWireY1(index)
     const y2 = util.getFretWireY2(index)
-    return <line stroke="lightgray" x1={x} x2={x} y1={y1} y2={y2} strokeWidth={model.fretWireWidth} key={index} />
+    return (
+      <line stroke={theme.fretWireColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={theme.fretWireWidth} key={index} />
+    )
   }
 
   renderNut = (util: FretboardModelUtil) => {
     if (!util.isNutVisible()) {
       return null
     }
-    const { model } = this.props
+    const theme = util.getTheme()
     const x = util.getNutX()
     const y1 = util.getNutY1()
     const y2 = util.getNutY2()
-    return <line stroke="#6c6c6c" x1={x} x2={x} y1={y1} y2={y2} strokeWidth={model.nutWidth} key="nut" />
+    return <line stroke={theme.nutColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={theme.nutWidth} key="nut" />
   }
 
   renderMarkers(util: FretboardModelUtil) {
-    const { model } = this.props
-    return model.markers.map(this.renderMarker(util))
-  }
-
-  renderMarker = (util: FretboardModelUtil) => (marker: MarkerModel) => {
-    const cx = util.getMarkerX(marker)
-    const cy = util.getMarkerY(marker)
-    const { model } = this.props
-    return (
-      <React.Fragment>
-        <circle fill="#27a9e1" cx={cx} cy={cy} r={model.markerRadius}></circle>
-        <text x={cx} y={cy} fill="white" fontSize={20} textAnchor="middle" alignmentBaseline="central">
-          {marker.label}
-        </text>
-      </React.Fragment>
-    )
+    const model = util.getModel()
+    return model.markers.map((marker) => <Marker util={util} marker={marker} key={marker.id} />)
   }
 }

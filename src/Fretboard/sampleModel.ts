@@ -15,8 +15,8 @@ const zeroMarker: MarkerModel = {
   id: nanoid(),
   fret: 0,
   stringId: strings[4].id,
-  kind: MarkerKind.Secondary,
-  label: '0',
+  kind: MarkerKind.Hollow,
+  label: '',
 }
 
 const firstMarker: MarkerModel = {
@@ -25,7 +25,7 @@ const firstMarker: MarkerModel = {
   fret: 3,
   stringId: strings[3].id,
   kind: MarkerKind.Pimary,
-  label: '3',
+  label: '#3',
 }
 
 const secondMarker: MarkerModel = {
@@ -42,22 +42,16 @@ const thirdMarker: MarkerModel = {
   id: nanoid(),
   fret: 2,
   stringId: strings[5].id,
-  kind: MarkerKind.Secondary,
-  label: '2',
+  kind: MarkerKind.Muted,
+  label: '',
 }
 
 const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]
 
-export const model: FretboardModel = {
+export const sampleModel: FretboardModel = {
   type: 'fretboard',
   strings,
   markers,
-  stringOverhang: 20,
-  stringSpacing: 40,
-  nutWidth: 15,
   firstVisibleFret: 0,
   lastVisibleFret: 5,
-  fretWidth: 80,
-  fretWireWidth: 8,
-  markerRadius: 20,
 }
