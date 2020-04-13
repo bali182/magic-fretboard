@@ -1,4 +1,12 @@
-import { FretboardModel, StringModel, MarkerModel, MarkerKind, FretboardTheme } from './FretboardModel'
+import {
+  FretboardModel,
+  StringModel,
+  MarkerModel,
+  MarkerKind,
+  FretboardTheme,
+  MarkerTheme,
+  MarkerShape,
+} from './FretboardModel'
 import head from 'lodash/head'
 import last from 'lodash/last'
 
@@ -48,23 +56,19 @@ export class FretboardModelUtil {
     return theme.stringOverhang
   }
 
-  private getMarkerKindColor(kind: MarkerKind): string {
+  private getMarkerTheme(kind: MarkerKind): MarkerTheme {
     const theme = this.getTheme()
 
     switch (kind) {
       case MarkerKind.Default:
-        return theme.defaultMarkerColor
+        return theme.defaultMarkerTheme
       case MarkerKind.Muted:
-        return theme.mutedMarkerColor
+        return theme.mutedMarkerTheme
       case MarkerKind.Pimary:
-        return theme.primaryMarkerColor
-      case MarkerKind.Secondary:
-        return theme.secondaryMarkerColor
+        return theme.primaryMarkerTheme
+      case MarkerKind.Hollow:
+        return theme.hollowMarkerTheme
     }
-  }
-
-  private isOutlineMarker(marker: MarkerModel): boolean {
-    return marker.fret === 0 || marker.kind === MarkerKind.Muted
   }
 
   getModel(): FretboardModel {
@@ -202,23 +206,43 @@ export class FretboardModelUtil {
   }
 
   getMarkerFill(marker: MarkerModel): string {
-    return this.isOutlineMarker(marker) ? 'none' : this.getMarkerKindColor(marker.kind)
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.fillColor
   }
 
   getMarkerStroke(marker: MarkerModel): string {
-    return this.isOutlineMarker(marker) ? this.getMarkerKindColor(marker.kind) : 'none'
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.strokeColor
   }
 
   getMarkerStrokeWidth(marker: MarkerModel): number {
-    const theme = this.getTheme()
-    return this.isOutlineMarker(marker) ? theme.hollowMarkerOutlineWidth : 0
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.strokeWidth
   }
 
   getMarkerRadius(marker: MarkerModel) {
     const theme = this.getTheme()
-    if (!this.isOutlineMarker(marker)) {
-      return theme.markerRadius
-    }
-    return theme.markerRadius - theme.hollowMarkerOutlineWidth / 2
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.strokeWidth > 0 ? theme.markerRadius - markerTheme.strokeWidth / 2 : theme.markerRadius
+  }
+
+  getMarkerFontSize(marker: MarkerModel): number {
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.fontSize
+  }
+
+  getMarkerFontColor(marker: MarkerModel): string {
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.fontColor
+  }
+
+  getMarkerFontFamily(marker: MarkerModel): string {
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.fontFamily
+  }
+
+  getMarkerShape(marker: MarkerModel): MarkerShape {
+    const markerTheme = this.getMarkerTheme(marker.kind)
+    return markerTheme.shape
   }
 }
