@@ -1,4 +1,4 @@
-import { MarkerTheme, MarkerShape, FretboardTheme } from './FretboardModel'
+import { MarkerTheme, MarkerShape, FretboardTheme } from '../components/Fretboard/FretboardModel'
 
 const defaultFontSize = 22
 const defautlFontFamily = 'sans-serif'

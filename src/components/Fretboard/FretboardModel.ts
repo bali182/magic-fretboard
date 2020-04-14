@@ -59,6 +59,7 @@ export type FretboardTheme = {
 
 export type FretboardModel = {
   type: 'fretboard'
+  id: string
   strings: StringModel[]
   markers: MarkerModel[]
   firstVisibleFret: number

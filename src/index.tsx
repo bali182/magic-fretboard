@@ -1,12 +1,5 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Fretboard } from './Fretboard/Fretboard'
-import { sampleModel } from './Fretboard/sampleModel'
-import { defaultTheme } from './Fretboard/defaultTheme'
+import { AppLayout } from './components/AppLayout/AppLayout'
 
-render(
-  <div style={{ padding: '20px' }}>
-    <Fretboard model={sampleModel} theme={defaultTheme} />
-  </div>,
-  document.getElementById('root')
-)
+render(<AppLayout />, document.getElementById('root'))
