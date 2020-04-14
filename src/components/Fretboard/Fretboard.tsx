@@ -4,16 +4,20 @@ import { FretboardModelUtil } from './FretboadModelUtil'
 import range from 'lodash/range'
 import { Marker } from './Marker'
 import { MarkerDefs } from './MarkerDefs'
+import isNil from 'lodash/isNil'
+import flatMap from 'lodash/flatMap'
+import { MarkerPlaceholder } from './MarkerPlaceholder'
 
 export type FretboardProps = {
   model: FretboardModel
   theme: FretboardTheme
+  pure?: boolean
 }
 
 export class Fretboard extends PureComponent<FretboardProps> {
   render() {
-    const { model, theme } = this.props
-    const util = new FretboardModelUtil(model, theme)
+    const { model, theme, pure } = this.props
+    const util = new FretboardModelUtil(model, theme, Boolean(pure))
     const __temporaryStyle: React.CSSProperties = {
       // border: '1px solid black',
     }
@@ -38,10 +42,10 @@ export class Fretboard extends PureComponent<FretboardProps> {
   }
 
   renderFrets(util: FretboardModelUtil): ReactNode {
-    if (util.isNutVisible()) {
-      return range(1, util.getFretCount() + 1).map(this.renderFretWire(util))
-    }
-    return range(0, util.getFretCount() + 1).map(this.renderFretWire(util))
+    return util
+      .getFrets()
+      .filter((fret) => fret > 0)
+      .map(this.renderFretWire(util))
   }
 
   renderString = (util: FretboardModelUtil) => (strModel: StringModel): ReactNode => {
@@ -62,13 +66,13 @@ export class Fretboard extends PureComponent<FretboardProps> {
     )
   }
 
-  renderFretWire = (util: FretboardModelUtil) => (index: number) => {
+  renderFretWire = (util: FretboardModelUtil) => (fret: number) => {
     const theme = util.getTheme()
-    const x = util.getFretWireX(index)
-    const y1 = util.getFretWireY1(index)
-    const y2 = util.getFretWireY2(index)
+    const x = util.getFretWireX(fret)
+    const y1 = util.getFretWireY1(fret)
+    const y2 = util.getFretWireY2(fret)
     return (
-      <line stroke={theme.fretWireColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={theme.fretWireWidth} key={index} />
+      <line stroke={theme.fretWireColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={theme.fretWireWidth} key={fret} />
     )
   }
 
@@ -83,8 +87,18 @@ export class Fretboard extends PureComponent<FretboardProps> {
     return <line stroke={theme.nutColor} x1={x} x2={x} y1={y1} y2={y2} strokeWidth={theme.nutWidth} key="nut" />
   }
 
-  renderMarkers(util: FretboardModelUtil) {
-    const model = util.getModel()
-    return model.markers.map((marker) => <Marker util={util} marker={marker} key={marker.id} />)
+  renderMarkers(util: FretboardModelUtil): ReactNode {
+    const strings = util.getStringIds()
+    const frets = util.getFrets()
+    return flatMap(strings, (stringId) =>
+      flatMap(frets, (fret) => {
+        const marker = util.getMarker(stringId, fret)
+        if (!isNil(marker)) {
+          return <Marker util={util} marker={marker} key={marker.id} />
+        } else {
+          return <MarkerPlaceholder util={util} stringId={stringId} fret={fret} key={`${stringId}-${fret}`} />
+        }
+      })
+    )
   }
 }

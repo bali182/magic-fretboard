@@ -10,6 +10,7 @@ const fretboardViewStyle = css({
   marginBottom: '20px',
   overflowX: 'auto',
   overflowY: 'hidden',
+  flexShrink: 0,
 })
 
 export type FretboardViewProps = {

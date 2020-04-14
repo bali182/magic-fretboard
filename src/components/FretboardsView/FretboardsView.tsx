@@ -23,8 +23,7 @@ export class FretboardsView extends PureComponent<FretboardsViewProps> {
     return (
       <div className={fretboardsViewStyle}>
         <FretboardView theme={defaultTheme} model={sampleModel} />
-        <FretboardView theme={defaultTheme} model={{ ...sampleModel, firstVisibleFret: 0, lastVisibleFret: 10 }} />
-        <FretboardView theme={defaultTheme} model={{ ...sampleModel, firstVisibleFret: 0, lastVisibleFret: 22 }} />
+        <FretboardView theme={defaultTheme} model={{ ...sampleModel, firstVisibleFret: 3, lastVisibleFret: 10 }} />
       </div>
     )
   }

@@ -20,6 +20,12 @@ export class MarkerDefs extends PureComponent<MarkerDefsProps> {
     )
   }
 
+  renderPlaceholderMarker() {
+    const { util } = this.props
+    const radius = util.getTheme().markerRadius - 2
+    return <circle id={MarkerDefs.placeholderMarkerId()} fill="none" r={radius} strokeWidth={2} />
+  }
+
   renderXShapeDef(id: string, theme: FretboardTheme, markerTheme: MarkerTheme): ReactNode {
     const radius = theme.markerRadius
     const strokeCompensation = Math.floor(markerTheme.strokeWidth / 6)
@@ -78,6 +84,7 @@ export class MarkerDefs extends PureComponent<MarkerDefsProps> {
         {this.renderMarkerShapeDef(MarkerKind.Hollow)}
         {this.renderMarkerShapeDef(MarkerKind.Pimary)}
         {this.renderMarkerShapeDef(MarkerKind.Muted)}
+        {this.renderPlaceholderMarker()}
       </defs>
     )
   }
@@ -87,5 +94,11 @@ export class MarkerDefs extends PureComponent<MarkerDefsProps> {
   }
   static shapeRefId(kind: MarkerKind): string {
     return `#${MarkerDefs.shapeId(kind)}`
+  }
+  static placeholderMarkerId() {
+    return `marker-placeholder`
+  }
+  static placeholderMarkerRefId() {
+    return `#${MarkerDefs.placeholderMarkerId()}`
   }
 }

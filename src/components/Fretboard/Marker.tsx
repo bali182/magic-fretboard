@@ -1,7 +1,7 @@
 import React, { PureComponent, ReactNode, Fragment } from 'react'
-import { FretboardModelUtil } from './FretboadModelUtil'
-import { MarkerModel, MarkerShape } from './FretboardModel'
 import isNil from 'lodash/isNil'
+import { FretboardModelUtil } from './FretboadModelUtil'
+import { MarkerModel } from './FretboardModel'
 import { MarkerDefs } from './MarkerDefs'
 
 type MarkerProps = {
@@ -15,9 +15,7 @@ export class Marker extends PureComponent<MarkerProps> {
     if (isNil(marker.label) || marker.label.length === 0) {
       return null
     }
-    const fontColor = util.getMarkerFontColor(marker)
-    const fontSize = util.getMarkerFontSize(marker)
-    const fontFamily = util.getMarkerFontFamily(marker)
+    const { fontColor, fontFamily, fontSize } = util.getMarkerTheme(marker.kind)
     return (
       <text
         x={x}
