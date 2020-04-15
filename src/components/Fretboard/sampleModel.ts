@@ -50,7 +50,7 @@ const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]
 
 export const sampleModel: FretboardModel = {
   type: 'fretboard',
-  orientation: FretboardOrientation.LeftHanded,
+  orientation: FretboardOrientation.RightHanded,
   id: nanoid(),
   strings,
   markers,

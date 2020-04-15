@@ -7,10 +7,17 @@ import { MarkerDefs } from './MarkerDefs'
 type MarkerProps = {
   util: FretboardModelUtil
   marker: MarkerModel
+  onMarkerSelected: (markerId: string) => void
 }
 
 export class Marker extends PureComponent<MarkerProps> {
-  renderLabel(x: number, y: number): ReactNode {
+  private onClick = (e: React.MouseEvent<SVGUseElement>) => {
+    e.stopPropagation()
+    const { marker, onMarkerSelected } = this.props
+    onMarkerSelected(marker.id)
+  }
+
+  private renderLabel(x: number, y: number): ReactNode {
     const { util, marker } = this.props
     if (isNil(marker.label) || marker.label.length === 0) {
       return null
@@ -31,9 +38,10 @@ export class Marker extends PureComponent<MarkerProps> {
     )
   }
 
-  renderShape(x: number, y: number): ReactNode {
-    const { marker } = this.props
-    return <use x={x} y={y} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
+  private renderShape(x: number, y: number): ReactNode {
+    const { marker, util } = this.props
+    const onClick = util.isPure() ? null : this.onClick
+    return <use x={x} y={y} onClick={onClick} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
   }
 
   render() {

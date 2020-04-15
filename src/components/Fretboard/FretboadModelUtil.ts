@@ -201,21 +201,18 @@ export class FretboardModelUtil {
     return isNil(stringIndex) ? null : stringIndex
   }
 
-  getStringY(string: StringModel): number {
-    const model = this.getModel()
+  getStringY(stringId: string): number {
     const theme = this.getTheme()
-
     const topOverhang = this.getTopOverhang()
-
-    const index = model.strings.indexOf(string)
+    const index = this.getStringIndex(stringId)
     const basePosition = theme.stringSpacing * index
     return topOverhang + basePosition
   }
-  getStringX1(string: StringModel): number {
+  getStringX1(stringId: string): number {
     const unfrettedMarkerSpace = this.getUnfrettedMarkerSpace()
     return unfrettedMarkerSpace
   }
-  getStringX2(string: StringModel): number {
+  getStringX2(stringId: string): number {
     // TODO
     return this.getViewportWidth()
   }

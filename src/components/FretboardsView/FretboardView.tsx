@@ -23,7 +23,15 @@ export class FretboardView extends PureComponent<FretboardViewProps> {
     const { model, theme } = this.props
     return (
       <div className={fretboardViewStyle}>
-        <Fretboard model={model} theme={theme} />
+        <Fretboard
+          model={model}
+          theme={theme}
+          pure={false}
+          onFretSelected={(fret) => console.log('onFretSelected', fret)}
+          onStringSelected={(stringId) => console.log('onStringSelected', stringId)}
+          onMarkerCreated={(stringId, fret) => console.log('onMarkerCreated', stringId, fret)}
+          onMarkerSelected={(markerId) => console.log('onMarkerSelected', markerId)}
+        />
       </div>
     )
   }
