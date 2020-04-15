@@ -311,7 +311,7 @@ export class FretboardModelUtil {
 
   getOrientationTransform(): string {
     const model = this.getModel()
-    return model.orientation === FretboardOrientation.LeftHanded ? 'scale(-1,1)' : 'none'
+    return model.orientation === FretboardOrientation.LeftHanded ? 'scale(-1,1)' : undefined
   }
 
   getTextXMultiplier(): number {

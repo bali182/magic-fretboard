@@ -16,6 +16,6 @@ export class GuitarStrings extends PureComponent<GuitarStringsProps> {
   }
   renderString = (util: FretboardModelUtil) => (strModel: StringModel): ReactNode => {
     const { onStringSelected } = this.props
-    return <GuitarString util={util} string={strModel} onStringSelected={onStringSelected} />
+    return <GuitarString util={util} string={strModel} onStringSelected={onStringSelected} key={strModel.id} />
   }
 }

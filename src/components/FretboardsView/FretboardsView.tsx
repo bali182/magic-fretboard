@@ -3,6 +3,9 @@ import { css } from 'emotion'
 import { FretboardView } from './FretboardView'
 import { defaultTheme } from '../../state/defaultTheme'
 import { sampleModel } from '../Fretboard/sampleModel'
+import { FretboardModel } from '../Fretboard/FretboardModel'
+import { MagicFretboardAppState } from '../../state/state'
+import { connect } from 'react-redux'
 
 const fretboardsViewStyle = css({
   height: '100vh',
@@ -16,15 +19,29 @@ const fretboardsViewStyle = css({
   padding: '20px',
 })
 
-export type FretboardsViewProps = {}
+export type FretboardsViewProps = ReduxProps
 
-export class FretboardsView extends PureComponent<FretboardsViewProps> {
+type ReduxProps = {
+  fretboards: FretboardModel[]
+}
+
+export class _FretboardsView extends PureComponent<FretboardsViewProps> {
   render() {
+    const { fretboards } = this.props
     return (
       <div className={fretboardsViewStyle}>
-        <FretboardView theme={defaultTheme} model={sampleModel} />
-        <FretboardView theme={defaultTheme} model={{ ...sampleModel, firstVisibleFret: 2, lastVisibleFret: 10 }} />
+        {fretboards.map((fretboard) => (
+          <FretboardView model={fretboard} key={fretboard.id} />
+        ))}
       </div>
     )
   }
 }
+
+function mapStateToProps(state: MagicFretboardAppState): ReduxProps {
+  return {
+    fretboards: state.fretboards,
+  }
+}
+
+export const FretboardsView = connect(mapStateToProps)(_FretboardsView)

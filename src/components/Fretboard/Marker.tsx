@@ -11,10 +11,16 @@ type MarkerProps = {
 }
 
 export class Marker extends PureComponent<MarkerProps> {
-  private onClick = (e: React.MouseEvent<SVGUseElement>) => {
+  private onClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     const { marker, onMarkerSelected } = this.props
     onMarkerSelected(marker.id)
+  }
+
+  private getClickHandler() {
+    const { util } = this.props
+    const onClick = util.isPure() ? null : this.onClick
+    return onClick
   }
 
   private renderLabel(x: number, y: number): ReactNode {
@@ -31,6 +37,7 @@ export class Marker extends PureComponent<MarkerProps> {
         fill={fontColor}
         fontSize={fontSize}
         fontFamily={fontFamily}
+        onClick={this.getClickHandler()}
         textAnchor="middle"
         alignmentBaseline="central">
         {marker.label}
@@ -39,9 +46,8 @@ export class Marker extends PureComponent<MarkerProps> {
   }
 
   private renderShape(x: number, y: number): ReactNode {
-    const { marker, util } = this.props
-    const onClick = util.isPure() ? null : this.onClick
-    return <use x={x} y={y} onClick={onClick} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
+    const { marker } = this.props
+    return <use x={x} y={y} onClick={this.getClickHandler()} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
   }
 
   render() {

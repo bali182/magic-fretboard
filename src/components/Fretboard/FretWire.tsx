@@ -20,7 +20,7 @@ export class FretWire extends PureComponent<FretWireProps> {
     const x = util.getFretWireX(fret)
     const y1 = util.getFretWireY1(fret)
     const y2 = util.getFretWireY2(fret)
-    const onClick = util.isPure ? null : this.onClick
+    const onClick = util.isPure() ? null : this.onClick
     return (
       <line
         stroke={theme.fretWireColor}

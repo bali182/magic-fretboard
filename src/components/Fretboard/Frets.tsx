@@ -17,6 +17,6 @@ export class Frets extends PureComponent<FretsProps> {
   }
   renderFretWire = (util: FretboardModelUtil) => (fret: number) => {
     const { onFretSelected } = this.props
-    return <FretWire util={util} fret={fret} onFretSelected={onFretSelected} />
+    return <FretWire util={util} fret={fret} onFretSelected={onFretSelected} key={fret} />
   }
 }
