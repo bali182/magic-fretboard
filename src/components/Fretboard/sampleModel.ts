@@ -1,4 +1,4 @@
-import { StringModel, MarkerModel, MarkerKind, FretboardModel } from './FretboardModel'
+import { StringModel, MarkerModel, MarkerKind, FretboardModel, FretboardOrientation } from './FretboardModel'
 import { nanoid } from 'nanoid'
 
 const strings = ['E6', 'A', 'D', 'G', 'B', 'E1'].map(
@@ -50,6 +50,7 @@ const markers = [zeroMarker, firstMarker, secondMarker, thirdMarker]
 
 export const sampleModel: FretboardModel = {
   type: 'fretboard',
+  orientation: FretboardOrientation.LeftHanded,
   id: nanoid(),
   strings,
   markers,

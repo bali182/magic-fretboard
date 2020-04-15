@@ -26,6 +26,7 @@ export class Fretboard extends PureComponent<FretboardProps> {
         style={__temporaryStyle}
         width={util.getViewportWidth()}
         height={util.getViewportHeight()}
+        transform={util.getOrientationTransform()}
         xmlns="http://www.w3.org/2000/svg">
         <MarkerDefs util={util} />
         {this.renderFrets(util)}
@@ -43,7 +44,7 @@ export class Fretboard extends PureComponent<FretboardProps> {
 
   renderFrets(util: FretboardModelUtil): ReactNode {
     return util
-      .getFrets()
+      .getFrets(false)
       .filter((fret) => fret > 0)
       .map(this.renderFretWire(util))
   }
@@ -89,7 +90,7 @@ export class Fretboard extends PureComponent<FretboardProps> {
 
   renderMarkers(util: FretboardModelUtil): ReactNode {
     const strings = util.getStringIds()
-    const frets = util.getFrets()
+    const frets = util.getFrets(true)
     return flatMap(strings, (stringId) =>
       flatMap(frets, (fret) => {
         const marker = util.getMarker(stringId, fret)

@@ -18,7 +18,8 @@ export class Marker extends PureComponent<MarkerProps> {
     const { fontColor, fontFamily, fontSize } = util.getMarkerTheme(marker.kind)
     return (
       <text
-        x={x}
+        transform={util.getOrientationTransform()}
+        x={util.getTextXMultiplier() * x}
         y={y}
         fill={fontColor}
         fontSize={fontSize}

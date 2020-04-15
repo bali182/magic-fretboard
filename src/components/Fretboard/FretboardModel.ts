@@ -10,6 +10,11 @@ export enum MarkerShape {
   X = 'X',
 }
 
+export enum FretboardOrientation {
+  LeftHanded = 'LeftHanded',
+  RightHanded = 'RightHanded',
+}
+
 export type MarkerModel = {
   type: 'marker'
   id: string
@@ -60,6 +65,7 @@ export type FretboardTheme = {
 export type FretboardModel = {
   type: 'fretboard'
   id: string
+  orientation: FretboardOrientation
   strings: StringModel[]
   markers: MarkerModel[]
   firstVisibleFret: number

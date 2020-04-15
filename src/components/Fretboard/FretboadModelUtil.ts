@@ -6,6 +6,7 @@ import {
   FretboardTheme,
   MarkerTheme,
   MarkerShape,
+  FretboardOrientation,
 } from './FretboardModel'
 import head from 'lodash/head'
 import last from 'lodash/last'
@@ -146,13 +147,14 @@ export class FretboardModelUtil {
     return model.strings.map((string) => string.id)
   }
 
-  getFrets(): number[] {
+  getFrets(forMarker: boolean): number[] {
     const model = this.getModel()
     if (model.firstVisibleFret === 0) {
       return range(model.firstVisibleFret, model.lastVisibleFret + 1)
     }
     const needsZeroFret = !this.isPure() || this.hasUnfrettedMarker()
-    const defaultFrets = range(model.firstVisibleFret, model.lastVisibleFret + 1)
+    const firstVisibleFret = forMarker ? model.firstVisibleFret + 1 : model.firstVisibleFret
+    const defaultFrets = range(firstVisibleFret, model.lastVisibleFret + 1)
     return needsZeroFret ? [0].concat(defaultFrets) : defaultFrets
   }
 
@@ -308,5 +310,15 @@ export class FretboardModelUtil {
     const adjustment = !isNil(markerTheme) && markerTheme.shape === MarkerShape.X ? -theme.markerRadius / 2 : 0
 
     return singingsHeight + topOverhang + adjustment
+  }
+
+  getOrientationTransform(): string {
+    const model = this.getModel()
+    return model.orientation === FretboardOrientation.LeftHanded ? 'scale(-1,1)' : 'none'
+  }
+
+  getTextXMultiplier(): number {
+    const model = this.getModel()
+    return model.orientation === FretboardOrientation.LeftHanded ? -1 : 1
   }
 }
