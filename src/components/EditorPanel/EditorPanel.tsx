@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react'
 import { css } from 'emotion'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { EditorField } from './EditorField'
+import { EditorString } from './EditorString'
+import { EditorNumber } from './EditorNumber'
+import { EditorSelect } from './EditorSelect'
+import { MarkerKind } from '../Fretboard/FretboardModel'
 
 const editorPanelStyle = css({
   height: '100vh',
@@ -21,7 +24,6 @@ const headerStyle = css({
   display: 'flex',
   alignContent: 'center',
   alignItems: 'center',
-  padding: '10px 16px',
   backgroundColor: '#eee',
   borderBottomColor: '#bbb',
   borderBottomWidth: '1px',
@@ -32,6 +34,10 @@ const headerLabelStyle = css({
   flexGrow: 1,
   flexShrink: 1,
   flexBasis: '1px',
+  padding: '8px',
+  fontWeight: 'bold',
+  fontSize: '1.2em',
+  color: '#6c6c6c',
 })
 
 const scrollAreaStyle = css({
@@ -39,6 +45,7 @@ const scrollAreaStyle = css({
   flexShrink: 1,
   flexBasis: '1px',
   overflowY: 'auto',
+  padding: '8px',
 })
 
 export type EditorPanelProps = {}
@@ -49,9 +56,22 @@ export class EditorPanel extends PureComponent<EditorPanelProps> {
       <div className={editorPanelStyle}>
         <div className={headerStyle}>
           <div className={headerLabelStyle}>Edit Properties</div>
-          <FontAwesomeIcon icon={faTimes} color="#333" onClick={() => console.log('hi')} cursor="pointer" />
         </div>
-        <div className={scrollAreaStyle}>Property editors here</div>
+        <div className={scrollAreaStyle}>
+          <EditorField name="String field" description="This is a string field">
+            <EditorString value="String value" onChange={() => {}} />
+          </EditorField>
+          <EditorField name="Number field" description="This is a number field">
+            <EditorNumber value={5} onChange={() => {}} />
+          </EditorField>
+          <EditorField name="Select field" description="This is a select field">
+            <EditorSelect
+              value={MarkerKind.Default}
+              options={[MarkerKind.Default, MarkerKind.Hollow, MarkerKind.Pimary, MarkerKind.Muted]}
+              onChange={() => {}}
+            />
+          </EditorField>
+        </div>
       </div>
     )
   }
