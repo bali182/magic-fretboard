@@ -1,20 +1,12 @@
-import { StringModel, MarkerModel, MarkerKind, FretboardModel, FretboardOrientation } from './FretboardModel'
+import { MarkerModel, MarkerKind, FretboardModel, FretboardOrientation } from './FretboardModel'
 import { nanoid } from 'nanoid'
-
-const strings = ['E6', 'A', 'D', 'G', 'B', 'E1'].map(
-  (string): StringModel => ({
-    id: nanoid(),
-    thickness: 6,
-    type: 'string',
-    label: string,
-  })
-)
+import { sixGuitarStrings } from './defaultStrings'
 
 const zeroMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
   fret: 0,
-  stringId: strings[4].id,
+  stringId: sixGuitarStrings[4].id,
   kind: MarkerKind.Hollow,
   label: '',
 }
@@ -23,7 +15,7 @@ const firstMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
   fret: 3,
-  stringId: strings[3].id,
+  stringId: sixGuitarStrings[3].id,
   kind: MarkerKind.Pimary,
   label: '#3',
 }
@@ -32,7 +24,7 @@ const secondMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
   fret: 1,
-  stringId: strings[0].id,
+  stringId: sixGuitarStrings[0].id,
   kind: MarkerKind.Default,
   label: '1',
 }
@@ -41,7 +33,7 @@ const thirdMarker: MarkerModel = {
   type: 'marker',
   id: nanoid(),
   fret: 2,
-  stringId: strings[5].id,
+  stringId: sixGuitarStrings[5].id,
   kind: MarkerKind.Muted,
   label: '',
 }
@@ -52,7 +44,7 @@ export const sampleModel: FretboardModel = {
   type: 'fretboard',
   orientation: FretboardOrientation.RightHanded,
   id: nanoid(),
-  strings,
+  strings: sixGuitarStrings,
   markers,
   firstVisibleFret: 0,
   lastVisibleFret: 5,

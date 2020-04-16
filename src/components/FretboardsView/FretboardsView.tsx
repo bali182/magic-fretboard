@@ -1,9 +1,13 @@
 import React, { PureComponent } from 'react'
 import { css } from 'emotion'
 import { FretboardView } from './FretboardView'
-import { FretboardModel } from '../Fretboard/FretboardModel'
+import { FretboardModel, FretboardOrientation } from '../Fretboard/FretboardModel'
 import { MagicFretboardAppState } from '../../state/state'
 import { connect } from 'react-redux'
+import { AddButton } from '../AddButton/AddButton'
+import { addFretboard } from '../../state/fretboards/fretboards.actionCreators'
+import { nanoid } from 'nanoid'
+import { sixGuitarStrings } from '../Fretboard/defaultStrings'
 
 const fretboardsViewStyle = css({
   height: '100vh',
@@ -17,13 +21,32 @@ const fretboardsViewStyle = css({
   padding: '20px',
 })
 
-export type FretboardsViewProps = ReduxProps
+export type FretboardsViewProps = ReduxProps & ActionCreatorProps
 
 type ReduxProps = {
   fretboards: FretboardModel[]
 }
 
+type ActionCreatorProps = {
+  addFretboard: typeof addFretboard
+}
+
 export class _FretboardsView extends PureComponent<FretboardsViewProps> {
+  private addFretboard = () => {
+    const { addFretboard } = this.props
+    addFretboard({
+      fretboard: {
+        type: 'fretboard',
+        id: nanoid(),
+        firstVisibleFret: 0,
+        lastVisibleFret: 5,
+        markers: [],
+        orientation: FretboardOrientation.RightHanded,
+        strings: sixGuitarStrings,
+      },
+    })
+  }
+
   render() {
     const { fretboards } = this.props
     return (
@@ -31,6 +54,7 @@ export class _FretboardsView extends PureComponent<FretboardsViewProps> {
         {fretboards.map((fretboard) => (
           <FretboardView model={fretboard} key={fretboard.id} />
         ))}
+        <AddButton onClick={this.addFretboard} />
       </div>
     )
   }
@@ -42,4 +66,8 @@ function mapStateToProps(state: MagicFretboardAppState): ReduxProps {
   }
 }
 
-export const FretboardsView = connect(mapStateToProps)(_FretboardsView)
+const actionCreators: ActionCreatorProps = {
+  addFretboard,
+}
+
+export const FretboardsView = connect(mapStateToProps, actionCreators)(_FretboardsView)

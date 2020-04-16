@@ -2,13 +2,15 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { css } from 'emotion'
 import { Fretboard } from '../Fretboard/Fretboard'
-import { FretboardModel, FretboardTheme, SelectionModel } from '../Fretboard/FretboardModel'
+import { FretboardModel, FretboardTheme, SelectionModel, MarkerKind } from '../Fretboard/FretboardModel'
 import { MagicFretboardAppState } from '../../state/state'
 import { setSelection } from '../../state/selection/selection.actionCreators'
+import { updateFretboard } from '../../state/fretboards/fretboards.actionCreators'
+import { nanoid } from 'nanoid'
 
 const fretboardViewStyle = css({
-  backgroundColor: '#eee',
-  border: '1px solid #bbb',
+  // backgroundColor: '#eee',
+  // border: '1px solid #bbb',
   padding: '20px',
   marginBottom: '20px',
   overflowX: 'auto',
@@ -27,6 +29,7 @@ type ReduxProps = {
 
 type ActionCreatorsProps = {
   setSelection: typeof setSelection
+  updateFretboard: typeof updateFretboard
 }
 
 export type FretboardViewProps = OwnProps & ReduxProps & ActionCreatorsProps
@@ -65,6 +68,25 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
     })
   }
 
+  onMarkerCreated = (stringId: string, fret: number) => {
+    const { updateFretboard, model } = this.props
+    const modelWithMarker: FretboardModel = {
+      ...model,
+      markers: [
+        ...model.markers,
+        {
+          id: nanoid(),
+          type: 'marker',
+          fret,
+          stringId,
+          kind: fret === 0 ? MarkerKind.Hollow : MarkerKind.Default,
+          label: '',
+        },
+      ],
+    }
+    updateFretboard({ fretboard: modelWithMarker })
+  }
+
   render() {
     const { model, theme, selection } = this.props
     return (
@@ -77,7 +99,7 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
           onFretSelected={this.onFretSelected}
           onStringSelected={this.onStringSelected}
           onMarkerSelected={this.onMarkerSelected}
-          onMarkerCreated={(stringId, fret) => console.log('onMarkerCreated', stringId, fret)}
+          onMarkerCreated={this.onMarkerCreated}
         />
       </div>
     )
@@ -93,6 +115,7 @@ function mapStateToProps(state: MagicFretboardAppState, props: OwnProps): ReduxP
 
 const actionCreators: ActionCreatorsProps = {
   setSelection,
+  updateFretboard,
 }
 
 export const FretboardView = connect(mapStateToProps, actionCreators)(_FretboardView)
