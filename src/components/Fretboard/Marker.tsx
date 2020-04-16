@@ -1,30 +1,17 @@
 import React, { PureComponent, ReactNode, Fragment } from 'react'
 import isNil from 'lodash/isNil'
-import { FretboardModelUtil } from './FretboadModelUtil'
 import { MarkerModel } from './FretboardModel'
 import { MarkerDefs } from './MarkerDefs'
+import { FretboardContext } from './FretboardContext'
+import { FretboardModelUtil } from './FretboadModelUtil'
 
 type MarkerProps = {
-  util: FretboardModelUtil
   marker: MarkerModel
-  onMarkerSelected: (markerId: string) => void
 }
 
 export class Marker extends PureComponent<MarkerProps> {
-  private onClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    const { marker, onMarkerSelected } = this.props
-    onMarkerSelected(marker.id)
-  }
-
-  private getClickHandler() {
-    const { util } = this.props
-    const onClick = util.isPure() ? null : this.onClick
-    return onClick
-  }
-
-  private renderLabel(x: number, y: number): ReactNode {
-    const { util, marker } = this.props
+  private renderLabel(util: FretboardModelUtil, onClick: React.MouseEventHandler, x: number, y: number): ReactNode {
+    const { marker } = this.props
     if (isNil(marker.label) || marker.label.length === 0) {
       return null
     }
@@ -37,7 +24,7 @@ export class Marker extends PureComponent<MarkerProps> {
         fill={fontColor}
         fontSize={fontSize}
         fontFamily={fontFamily}
-        onClick={this.getClickHandler()}
+        onClick={util.ifNotPure(onClick)}
         textAnchor="middle"
         alignmentBaseline="central">
         {marker.label}
@@ -45,20 +32,30 @@ export class Marker extends PureComponent<MarkerProps> {
     )
   }
 
-  private renderShape(x: number, y: number): ReactNode {
+  private renderShape(onClick: React.MouseEventHandler, x: number, y: number): ReactNode {
     const { marker } = this.props
-    return <use x={x} y={y} onClick={this.getClickHandler()} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
+    return <use x={x} y={y} onClick={onClick} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
   }
 
   render() {
-    const { util, marker } = this.props
-    const x = util.getMarkerX(marker.fret, marker.kind)
-    const y = util.getMarkerY(marker.stringId, marker.kind)
+    const { marker } = this.props
     return (
-      <Fragment>
-        {this.renderShape(x, y)}
-        {this.renderLabel(x, y)}
-      </Fragment>
+      <FretboardContext.Consumer>
+        {({ util, onMarkerSelected }) => {
+          const x = util.getMarkerX(marker.fret, marker.kind)
+          const y = util.getMarkerY(marker.stringId, marker.kind)
+          const onClick = util.ifNotPure((e: React.MouseEvent) => {
+            e.stopPropagation()
+            onMarkerSelected(marker.id)
+          })
+          return (
+            <Fragment>
+              {this.renderShape(onClick, x, y)}
+              {this.renderLabel(util, onClick, x, y)}
+            </Fragment>
+          )
+        }}
+      </FretboardContext.Consumer>
     )
   }
 }

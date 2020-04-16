@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react'
 import { css } from 'emotion'
 import { FretboardView } from './FretboardView'
-import { defaultTheme } from '../../state/defaultTheme'
-import { sampleModel } from '../Fretboard/sampleModel'
 import { FretboardModel } from '../Fretboard/FretboardModel'
 import { MagicFretboardAppState } from '../../state/state'
 import { connect } from 'react-redux'

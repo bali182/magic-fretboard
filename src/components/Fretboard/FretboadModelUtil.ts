@@ -297,7 +297,6 @@ export class FretboardModelUtil {
   }
 
   getMarkerY(stringId: string, kind: MarkerKind): number {
-    const model = this.getModel()
     const theme = this.getTheme()
     const markerTheme = this.getMarkerTheme(kind)
 
@@ -317,5 +316,9 @@ export class FretboardModelUtil {
   getTextXMultiplier(): number {
     const model = this.getModel()
     return model.orientation === FretboardOrientation.LeftHanded ? -1 : 1
+  }
+
+  ifNotPure<T>(item: T): T {
+    return this.isPure() ? null : item
   }
 }

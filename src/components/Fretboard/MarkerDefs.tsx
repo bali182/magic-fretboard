@@ -1,12 +1,9 @@
 import React, { PureComponent, ReactNode } from 'react'
 import { FretboardModelUtil } from './FretboadModelUtil'
 import { MarkerKind, MarkerShape, FretboardTheme, MarkerTheme } from './FretboardModel'
+import { FretboardContext } from './FretboardContext'
 
-type MarkerDefsProps = {
-  util: FretboardModelUtil
-}
-
-export class MarkerDefs extends PureComponent<MarkerDefsProps> {
+export class MarkerDefs extends PureComponent {
   renderCircleShapeDef(id: string, theme: FretboardTheme, markerTheme: MarkerTheme): ReactNode {
     const radius = markerTheme.strokeWidth > 0 ? theme.markerRadius - markerTheme.strokeWidth / 2 : theme.markerRadius
     return (
@@ -18,12 +15,6 @@ export class MarkerDefs extends PureComponent<MarkerDefsProps> {
         strokeWidth={markerTheme.strokeWidth}
       />
     )
-  }
-
-  renderPlaceholderMarker() {
-    const { util } = this.props
-    const radius = util.getTheme().markerRadius - 2
-    return <circle id={MarkerDefs.placeholderMarkerId()} fill="none" r={radius} strokeWidth={2} />
   }
 
   renderXShapeDef(id: string, theme: FretboardTheme, markerTheme: MarkerTheme): ReactNode {
@@ -64,8 +55,12 @@ export class MarkerDefs extends PureComponent<MarkerDefsProps> {
     )
   }
 
-  renderMarkerShapeDef(kind: MarkerKind): ReactNode {
-    const { util } = this.props
+  renderPlaceholderMarker(util: FretboardModelUtil) {
+    const radius = util.getTheme().markerRadius - 2
+    return <circle id={MarkerDefs.placeholderMarkerId()} fill="none" r={radius} strokeWidth={2} />
+  }
+
+  renderMarkerShapeDef(util: FretboardModelUtil, kind: MarkerKind): ReactNode {
     const theme = util.getTheme()
     const id = MarkerDefs.shapeId(kind)
     const markerTheme = util.getMarkerTheme(kind)
@@ -79,13 +74,17 @@ export class MarkerDefs extends PureComponent<MarkerDefsProps> {
 
   render() {
     return (
-      <defs>
-        {this.renderMarkerShapeDef(MarkerKind.Default)}
-        {this.renderMarkerShapeDef(MarkerKind.Hollow)}
-        {this.renderMarkerShapeDef(MarkerKind.Pimary)}
-        {this.renderMarkerShapeDef(MarkerKind.Muted)}
-        {this.renderPlaceholderMarker()}
-      </defs>
+      <FretboardContext.Consumer>
+        {({ util }) => (
+          <defs>
+            {this.renderMarkerShapeDef(util, MarkerKind.Default)}
+            {this.renderMarkerShapeDef(util, MarkerKind.Hollow)}
+            {this.renderMarkerShapeDef(util, MarkerKind.Pimary)}
+            {this.renderMarkerShapeDef(util, MarkerKind.Muted)}
+            {this.renderPlaceholderMarker(util)}
+          </defs>
+        )}
+      </FretboardContext.Consumer>
     )
   }
 

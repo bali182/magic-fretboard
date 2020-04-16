@@ -1,13 +1,11 @@
-import React, { PureComponent, ReactNode, Fragment } from 'react'
-import { FretboardModelUtil } from './FretboadModelUtil'
+import React, { PureComponent } from 'react'
 import { MarkerDefs } from './MarkerDefs'
 import { css } from 'emotion'
+import { FretboardContext } from './FretboardContext'
 
 type MarkerProps = {
-  util: FretboardModelUtil
   stringId: string
   fret: number
-  onMarkerCreated: (stringId: string, fret: number) => void
 }
 
 const placeholderStyle = css({
@@ -23,28 +21,31 @@ const placeholderStyle = css({
 })
 
 export class MarkerPlaceholder extends PureComponent<MarkerProps> {
-  private onClick = (e: React.MouseEvent<SVGCircleElement>) => {
-    e.stopPropagation()
-    const { fret, stringId, onMarkerCreated } = this.props
-    onMarkerCreated(stringId, fret)
-  }
-
   render() {
-    const { util, stringId, fret } = this.props
-    const x = util.getMarkerX(fret, null)
-    const y = util.getMarkerY(stringId, null)
-    const theme = util.getTheme()
-    const radius = theme.markerRadius - 2
-    const onClick = util.isPure() ? null : this.onClick
+    const { stringId, fret } = this.props
     return (
-      <circle
-        cx={x}
-        cy={y}
-        className={placeholderStyle}
-        id={MarkerDefs.placeholderMarkerId()}
-        r={radius}
-        onClick={onClick}
-      />
+      <FretboardContext.Consumer>
+        {({ util, onMarkerCreated }) => {
+          const x = util.getMarkerX(fret, null)
+          const y = util.getMarkerY(stringId, null)
+          const theme = util.getTheme()
+          const radius = theme.markerRadius - 2
+          const onClick = (e: React.MouseEvent<SVGCircleElement>) => {
+            e.stopPropagation()
+            onMarkerCreated(stringId, fret)
+          }
+          return (
+            <circle
+              cx={x}
+              cy={y}
+              className={placeholderStyle}
+              id={MarkerDefs.placeholderMarkerId()}
+              r={radius}
+              onClick={util.ifNotPure(onClick)}
+            />
+          )
+        }}
+      </FretboardContext.Consumer>
     )
   }
 }

@@ -1,22 +1,18 @@
 import React, { PureComponent } from 'react'
-import { FretboardModelUtil } from './FretboadModelUtil'
 import { FretWire } from './FretWire'
+import { FretboardContext } from './FretboardContext'
 
-export type FretsProps = {
-  util: FretboardModelUtil
-  onFretSelected: (fret: number) => void
-}
-
-export class Frets extends PureComponent<FretsProps> {
+export class Frets extends PureComponent {
   render() {
-    const { util } = this.props
-    return util
-      .getFrets(false)
-      .filter((fret) => fret > 0)
-      .map(this.renderFretWire(util))
-  }
-  renderFretWire = (util: FretboardModelUtil) => (fret: number) => {
-    const { onFretSelected } = this.props
-    return <FretWire util={util} fret={fret} onFretSelected={onFretSelected} key={fret} />
+    return (
+      <FretboardContext.Consumer>
+        {({ util }) => {
+          return util
+            .getFrets(false)
+            .filter((fret) => fret > 0)
+            .map((fret) => <FretWire fret={fret} key={fret} />)
+        }}
+      </FretboardContext.Consumer>
+    )
   }
 }

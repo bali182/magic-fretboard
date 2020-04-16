@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { css } from 'emotion'
 import { Fretboard } from '../Fretboard/Fretboard'
-import { FretboardModel, FretboardTheme } from '../Fretboard/FretboardModel'
+import { FretboardModel, FretboardTheme, SelectionModel } from '../Fretboard/FretboardModel'
 import { MagicFretboardAppState } from '../../state/state'
 import { setSelection } from '../../state/selection/selection.actionCreators'
 
@@ -22,6 +22,7 @@ type OwnProps = {
 
 type ReduxProps = {
   theme: FretboardTheme
+  selection: SelectionModel
 }
 
 type ActionCreatorsProps = {
@@ -34,10 +35,10 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   onFretSelected = (fret: number) => {
     const { model, setSelection } = this.props
     setSelection({
+      fretboardId: model.id,
       selection: {
         type: 'fretSelection',
         fret,
-        freboardId: model.id,
       },
     })
   }
@@ -45,10 +46,10 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   onStringSelected = (stringId: string) => {
     const { model, setSelection } = this.props
     setSelection({
+      fretboardId: model.id,
       selection: {
         type: 'stringSelection',
         stringId,
-        freboardId: model.id,
       },
     })
   }
@@ -56,19 +57,20 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   onMarkerSelected = (markerId: string) => {
     const { model, setSelection } = this.props
     setSelection({
+      fretboardId: model.id,
       selection: {
         type: 'markerSelection',
         markerId,
-        freboardId: model.id,
       },
     })
   }
 
   render() {
-    const { model, theme } = this.props
+    const { model, theme, selection } = this.props
     return (
       <div className={fretboardViewStyle}>
         <Fretboard
+          selection={selection}
           model={model}
           theme={theme}
           pure={false}
@@ -82,9 +84,10 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   }
 }
 
-function mapStateToProps(state: MagicFretboardAppState): ReduxProps {
+function mapStateToProps(state: MagicFretboardAppState, props: OwnProps): ReduxProps {
   return {
     theme: state.theme,
+    selection: state.selection[props.model.id],
   }
 }
 

@@ -1,21 +1,13 @@
-import React, { PureComponent, ReactNode } from 'react'
-import { FretboardModelUtil } from './FretboadModelUtil'
-import { StringModel } from './FretboardModel'
+import React, { PureComponent } from 'react'
 import { GuitarString } from './GuitarString'
+import { FretboardContext } from './FretboardContext'
 
-export type GuitarStringsProps = {
-  util: FretboardModelUtil
-  onStringSelected: (stringId: string) => void
-}
-
-export class GuitarStrings extends PureComponent<GuitarStringsProps> {
+export class GuitarStrings extends PureComponent {
   render() {
-    const { util } = this.props
-    const model = util.getModel()
-    return model.strings.map(this.renderString(util))
-  }
-  renderString = (util: FretboardModelUtil) => (strModel: StringModel): ReactNode => {
-    const { onStringSelected } = this.props
-    return <GuitarString util={util} string={strModel} onStringSelected={onStringSelected} key={strModel.id} />
+    return (
+      <FretboardContext.Consumer>
+        {({ util }) => util.getModel().strings.map((string) => <GuitarString string={string} key={string.id} />)}
+      </FretboardContext.Consumer>
+    )
   }
 }

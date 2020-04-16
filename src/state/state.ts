@@ -1,9 +1,8 @@
-import { FretboardModel, FretboardTheme } from '../components/Fretboard/FretboardModel'
-import { SelectionModel } from './selection/SelectionModel'
+import { FretboardModel, FretboardTheme, SelectionModel } from '../components/Fretboard/FretboardModel'
 
 export type FretboardsState = FretboardModel[]
 export type ThemeState = FretboardTheme
-export type SelectionState = SelectionModel
+export type SelectionState = { [fretboardId: string]: SelectionModel }
 
 export type MagicFretboardAppState = {
   fretboards: FretboardsState

@@ -71,3 +71,24 @@ export type FretboardModel = {
   firstVisibleFret: number
   lastVisibleFret: number
 }
+
+export type MarkerSelection = {
+  type: 'markerSelection'
+  markerId: string
+}
+
+export type StringSelection = {
+  type: 'stringSelection'
+  stringId: string
+}
+
+export type FretSelection = {
+  type: 'fretSelection'
+  fret: number
+}
+
+export type FretboardSelection = {
+  type: 'fretboardSelection'
+}
+
+export type SelectionModel = MarkerSelection | StringSelection | FretSelection | FretboardSelection
