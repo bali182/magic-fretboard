@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, ReactNode } from 'react'
 import { css } from 'emotion'
-import { EditorField } from './EditorField'
-import { EditorString } from './EditorString'
-import { EditorNumber } from './EditorNumber'
-import { EditorSelect } from './EditorSelect'
-import { MarkerKind } from '../Fretboard/FretboardModel'
+import { SelectionModel, FretboardModel, MarkerModel } from '../Fretboard/FretboardModel'
+import { connect } from 'react-redux'
+import { MagicFretboardAppState } from '../../state/state'
+import isNil from 'lodash/isNil'
+import { MarkerEditor } from './MarkerEditor'
+import { updateFretboard } from '../../state/fretboards/fretboards.actionCreators'
 
 const editorPanelStyle = css({
   height: '100vh',
@@ -48,31 +49,84 @@ const scrollAreaStyle = css({
   padding: '8px',
 })
 
-export type EditorPanelProps = {}
+type ReduxProps = {
+  selection: SelectionModel
+  fretboard: FretboardModel
+}
 
-export class EditorPanel extends PureComponent<EditorPanelProps> {
+type ActionCreatorsProps = {
+  updateFretboard: typeof updateFretboard
+}
+
+export type EditorPanelProps = ReduxProps & ActionCreatorsProps
+
+export class _EditorPanel extends PureComponent<EditorPanelProps> {
+  private onMarkerChange = (marker: MarkerModel) => {
+    const { fretboard, updateFretboard } = this.props
+    const newFretboard: FretboardModel = {
+      ...fretboard,
+      markers: fretboard.markers.map((originalMarker) => (originalMarker.id === marker.id ? marker : originalMarker)),
+    }
+    updateFretboard({ fretboard: newFretboard })
+  }
+
+  private renderHeaderLabel(): string {
+    const { selection } = this.props
+    if (isNil(selection)) {
+      return 'No selection'
+    }
+    switch (selection.type) {
+      case 'markerSelection':
+        return 'Edit Marker'
+      case 'fretSelection':
+        return 'Edit Fret'
+      case 'stringSelection':
+        return 'Edit String'
+      case 'fretboardSelection':
+        return 'Edit Fretboard'
+    }
+  }
+
+  private renderEditor(): ReactNode {
+    const { selection, fretboard } = this.props
+    if (isNil(selection)) {
+      return 'No selection'
+    }
+    switch (selection.type) {
+      case 'markerSelection': {
+        const marker = fretboard.markers.find((marker) => marker.id === selection.markerId)
+        return <MarkerEditor marker={marker} onChange={this.onMarkerChange} fretboard={fretboard} />
+      }
+      default:
+        return <span>No editor available yet</span>
+    }
+  }
+
   render() {
     return (
       <div className={editorPanelStyle}>
         <div className={headerStyle}>
-          <div className={headerLabelStyle}>Edit Properties</div>
+          <div className={headerLabelStyle}>{this.renderHeaderLabel()}</div>
         </div>
-        <div className={scrollAreaStyle}>
-          <EditorField name="String field" description="This is a string field">
-            <EditorString value="String value" onChange={() => {}} />
-          </EditorField>
-          <EditorField name="Number field" description="This is a number field">
-            <EditorNumber value={5} onChange={() => {}} />
-          </EditorField>
-          <EditorField name="Select field" description="This is a select field">
-            <EditorSelect
-              value={MarkerKind.Default}
-              options={[MarkerKind.Default, MarkerKind.Hollow, MarkerKind.Pimary, MarkerKind.Muted]}
-              onChange={() => {}}
-            />
-          </EditorField>
-        </div>
+        <div className={scrollAreaStyle}>{this.renderEditor()}</div>
       </div>
     )
   }
 }
+
+function mapStateToProps({ selection, fretboards }: MagicFretboardAppState): ReduxProps {
+  const fretboard: FretboardModel =
+    !isNil(selection.fretboardId) && !isNil(selection.selection)
+      ? fretboards.find(({ id }) => id === selection.fretboardId)
+      : null
+  return {
+    fretboard,
+    selection: selection.selection,
+  }
+}
+
+const actionCreators: ActionCreatorsProps = {
+  updateFretboard: updateFretboard,
+}
+
+export const EditorPanel = connect(mapStateToProps, actionCreators)(_EditorPanel)

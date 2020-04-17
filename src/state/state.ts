@@ -2,7 +2,7 @@ import { FretboardModel, FretboardTheme, SelectionModel } from '../components/Fr
 
 export type FretboardsState = FretboardModel[]
 export type ThemeState = FretboardTheme
-export type SelectionState = { [fretboardId: string]: SelectionModel }
+export type SelectionState = { fretboardId: string; selection: SelectionModel }
 
 export type MagicFretboardAppState = {
   fretboards: FretboardsState

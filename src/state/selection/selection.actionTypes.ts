@@ -15,13 +15,4 @@ export type SetSelectionAction = {
   payload: SetSelectionPayload
 }
 
-export type UnsetSelectionPayload = {
-  fretboardId: string
-}
-
-export type UnsetSelectionAction = {
-  type: SelectionActionType.UNSET_SELECTION
-  payload: UnsetSelectionPayload
-}
-
-export type SelectionAction = SetSelectionAction | UnsetSelectionAction
+export type SelectionAction = SetSelectionAction

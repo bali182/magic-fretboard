@@ -13,4 +13,7 @@ export const inputStyle = css({
     border: '2px solid #27a9e1',
     padding: '5px',
   },
+  ':disabled': {
+    background: '#ddd',
+  },
 })

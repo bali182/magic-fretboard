@@ -8,6 +8,7 @@ export type EditorStringProps = {
   minLength?: number
   maxLength?: number
   placeholder?: string
+  disabled?: boolean
 }
 
 export class EditorString extends PureComponent<EditorStringProps> {
@@ -17,7 +18,7 @@ export class EditorString extends PureComponent<EditorStringProps> {
   }
 
   render() {
-    const { value, placeholder, minLength, maxLength } = this.props
+    const { value, placeholder, minLength, maxLength, disabled } = this.props
     const stringValue = isNil(value) ? '' : value.toString()
     return (
       <input
@@ -28,6 +29,7 @@ export class EditorString extends PureComponent<EditorStringProps> {
         minLength={minLength}
         maxLength={maxLength}
         placeholder={placeholder}
+        disabled={disabled}
       />
     )
   }
