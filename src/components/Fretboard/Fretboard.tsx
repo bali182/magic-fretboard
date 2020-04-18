@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { FretboardModel, FretboardTheme, SelectionModel } from './FretboardModel'
 import { FretboardModelUtil } from './FretboadModelUtil'
-import { MarkerDefs } from './MarkerDefs'
 import { Nut } from './Nut'
 import { Markers } from './Markers'
 import { Frets } from './Frets'
@@ -65,7 +64,6 @@ export class Fretboard extends PureComponent<FretboardProps> {
     return (
       <FretboardContext.Provider value={context}>
         <svg width={width} height={height} transform={transform} xmlns="http://www.w3.org/2000/svg" onClick={onClick}>
-          <MarkerDefs />
           <Frets />
           <Nut />
           <GuitarStrings />

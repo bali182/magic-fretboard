@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import { MarkerDefs } from './MarkerDefs'
 import { css } from 'emotion'
 import { FretboardContext } from './FretboardContext'
 
@@ -34,16 +33,7 @@ export class MarkerPlaceholder extends PureComponent<MarkerProps> {
             e.stopPropagation()
             onMarkerCreated(stringId, fret)
           }
-          return (
-            <circle
-              cx={x}
-              cy={y}
-              className={placeholderStyle}
-              id={MarkerDefs.placeholderMarkerId()}
-              r={radius}
-              onClick={util.ifNotPure(onClick)}
-            />
-          )
+          return <circle cx={x} cy={y} className={placeholderStyle} r={radius} onClick={util.ifNotPure(onClick)} />
         }}
       </FretboardContext.Consumer>
     )

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { css } from 'emotion'
 import { Fretboard } from '../Fretboard/Fretboard'
-import { FretboardModel, FretboardTheme, SelectionModel, MarkerKind } from '../Fretboard/FretboardModel'
+import { FretboardModel, FretboardTheme, SelectionModel, MarkerKind, MarkerModel } from '../Fretboard/FretboardModel'
 import { MagicFretboardAppState } from '../../state/state'
 import { setSelection } from '../../state/selection/selection.actionCreators'
 import { updateFretboard } from '../../state/fretboards/fretboards.actionCreators'
@@ -78,22 +78,27 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   }
 
   onMarkerCreated = (stringId: string, fret: number) => {
-    const { updateFretboard, model } = this.props
+    const { updateFretboard, setSelection, model } = this.props
+    const newMarker: MarkerModel = {
+      id: nanoid(),
+      type: 'marker',
+      fret,
+      stringId,
+      kind: fret === 0 ? MarkerKind.Hollow : MarkerKind.Default,
+      label: '',
+    }
     const modelWithMarker: FretboardModel = {
       ...model,
-      markers: [
-        ...model.markers,
-        {
-          id: nanoid(),
-          type: 'marker',
-          fret,
-          stringId,
-          kind: fret === 0 ? MarkerKind.Hollow : MarkerKind.Default,
-          label: '',
-        },
-      ],
+      markers: [...model.markers, newMarker],
     }
     updateFretboard({ fretboard: modelWithMarker })
+    setSelection({
+      fretboardId: model.id,
+      selection: {
+        type: 'markerSelection',
+        markerId: newMarker.id,
+      },
+    })
   }
 
   render() {

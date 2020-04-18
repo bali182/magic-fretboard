@@ -35,7 +35,7 @@ const mutedMarkerTheme: MarkerTheme = {
 
 const hollowMarkerTheme: MarkerTheme = {
   shape: MarkerShape.Circle,
-  fillColor: 'none',
+  fillColor: 'rgba(255, 255, 255, 0.01)',
   strokeColor: '#27a9e1',
   fontColor: '#555',
   fontSize: defaultFontSize,
