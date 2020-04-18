@@ -14,6 +14,7 @@ import {
   StringSelectionHandler,
   FretboardSelectionHandler,
 } from './FretboardContext'
+import isNil from 'lodash/isNil'
 
 export type FretboardProps = {
   model: FretboardModel
@@ -28,7 +29,38 @@ export type FretboardProps = {
   onFretboardSelected?: FretboardSelectionHandler
 }
 
-export class Fretboard extends PureComponent<FretboardProps> {
+export type FretboardState = {
+  hoverSelection: SelectionModel
+}
+
+export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
+  
+  state: FretboardState = {
+    hoverSelection: null,
+  }
+
+  private onMarkerHovered = (markerId: string) => {
+    this.setState({
+      hoverSelection: isNil(markerId)
+        ? null
+        : {
+            type: 'markerSelection',
+            markerId,
+          },
+    })
+  }
+
+  private onStringHovered = (stringId: string) => {
+    this.setState({
+      hoverSelection: isNil(stringId)
+        ? null
+        : {
+            type: 'stringSelection',
+            stringId,
+          },
+    })
+  }
+
   render() {
     const {
       model,
@@ -42,7 +74,9 @@ export class Fretboard extends PureComponent<FretboardProps> {
       selection,
     } = this.props
 
-    const util = new FretboardModelUtil(model, theme, selection, Boolean(pure))
+    const { hoverSelection } = this.state
+
+    const util = new FretboardModelUtil(model, theme, selection, hoverSelection, Boolean(pure))
     const width = util.getViewportWidth()
     const height = util.getViewportHeight()
     const transform = util.getOrientationTransform()
@@ -59,6 +93,8 @@ export class Fretboard extends PureComponent<FretboardProps> {
       onFretSelected,
       onStringSelected,
       onFretboardSelected,
+      onMarkerHovered: this.onMarkerHovered,
+      onStringHovered: this.onStringHovered,
     }
 
     return (

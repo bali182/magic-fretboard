@@ -15,6 +15,9 @@ export type FretboardContextType = {
   onFretSelected: FretSelectionHandler
   onStringSelected: StringSelectionHandler
   onFretboardSelected: FretboardSelectionHandler
+
+  onMarkerHovered: MarkerSelectionHandler
+  onStringHovered: StringSelectionHandler
 }
 
 export const FretboardContext = createContext<FretboardContextType>(null)

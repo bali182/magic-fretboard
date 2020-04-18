@@ -9,12 +9,12 @@ import { XShape } from './XShape'
 import { CircleShape } from './CircleShape'
 import { PlaceholderShape } from './PlaceholderShape'
 
-const markerStyle = (faded: boolean) => {
-  return css({
+const markerStyle = (lowerOpacity: boolean) =>
+  css({
     cursor: 'pointer',
-    opacity: faded ? 0.7 : 1,
+    transition: 'opacity 200ms',
+    opacity: lowerOpacity ? 0.5 : 1,
   })
-}
 
 type MarkerProps = {
   fret: number
@@ -55,27 +55,61 @@ export class Marker extends PureComponent<MarkerProps> {
     return <CircleShape markerTheme={markerTheme} theme={theme} />
   }
 
+  private shouldLowerOpacity(util: FretboardModelUtil, marker: MarkerModel): boolean {
+    const isMarkerHovered = util.isMarkerHovered(marker.id)
+    if (isMarkerHovered) {
+      return false
+    }
+    const isAnyMarkerHovered = isMarkerSelection(util.getHoverSelection())
+    if (isAnyMarkerHovered && !isMarkerHovered) {
+      return true
+    }
+    const isAnyMarkerSelected = isMarkerSelection(util.getSelection())
+    const isMarkerSelected = util.isMarkerSelected(marker.id)
+    return !isMarkerSelected && isAnyMarkerSelected
+  }
+
   render() {
     const { fret, stringId } = this.props
     return (
       <FretboardContext.Consumer>
-        {({ util, onMarkerSelected, onMarkerCreated }) => {
+        {({ util, onMarkerSelected, onMarkerCreated, onMarkerHovered }) => {
           const marker = util.getMarker(stringId, fret)
-          const x = util.getMarkerX(fret, isNil(marker) ? null : marker.kind)
-          const y = util.getMarkerY(stringId, isNil(marker) ? null : marker.kind)
+          const x = util.getMarkerX(fret)
+          const y = util.getMarkerY(stringId)
+
           const onClick = util.ifNotPure((e: React.MouseEvent) => {
             e.stopPropagation()
             if (isNil(marker)) {
               onMarkerCreated(stringId, fret)
             } else {
-              onMarkerSelected(util.isMarkerSelected(marker) ? null : marker.id)
+              onMarkerSelected(util.isMarkerSelected(marker.id) ? null : marker.id)
             }
           })
-          const isMarkerFaded =
-            isMarkerSelection(util.getSelection()) && !isNil(marker) && !util.isMarkerSelected(marker)
-          const className = util.ifNotPure(markerStyle(isMarkerFaded))
+
+          const onMouseEnter = util.ifNotPure(() => {
+            if (!isNil(marker)) {
+              onMarkerHovered(marker.id)
+            }
+          })
+
+          const onMouseLeave = util.ifNotPure(() => {
+            if (!isNil(marker)) {
+              onMarkerHovered(null)
+            }
+          })
+
+          const shouldLowerOpacity = !isNil(marker) && this.shouldLowerOpacity(util, marker)
+          const className = util.ifNotPure(markerStyle(shouldLowerOpacity))
           return (
-            <svg x={x} y={y} className={className} onClick={onClick} xmlns="http://www.w3.org/2000/svg">
+            <svg
+              x={x}
+              y={y}
+              className={className}
+              onClick={onClick}
+              xmlns="http://www.w3.org/2000/svg"
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}>
               {this.renderShape(util, marker)}
               {this.renderLabel(util, marker)}
             </svg>

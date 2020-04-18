@@ -12,7 +12,7 @@ import head from 'lodash/head'
 import last from 'lodash/last'
 import isNil from 'lodash/isNil'
 import range from 'lodash/range'
-import { isMarkerSelection, isFretboardSelection } from './TypeGuards'
+import { isMarkerSelection, isFretboardSelection, isStringSelection } from './TypeGuards'
 
 type MarkerMap = {
   [stringId: string]: { [fret: number]: MarkerModel }
@@ -30,12 +30,20 @@ export class FretboardModelUtil {
   private readonly pure: boolean
   private readonly _hasUnfrettedMarker: boolean
   private readonly selection: SelectionModel
+  private readonly hoverSelection: SelectionModel
 
-  constructor(model: FretboardModel, theme: FretboardTheme, selection: SelectionModel, pure: boolean) {
+  constructor(
+    model: FretboardModel,
+    theme: FretboardTheme,
+    selection: SelectionModel,
+    hoverSelection: SelectionModel,
+    pure: boolean
+  ) {
     this.model = model
     this.theme = theme
     this.pure = pure
     this.selection = selection
+    this.hoverSelection = hoverSelection
 
     this.markerMap = this.buildMarkerMap()
     this.stringMap = this.buildStringMap()
@@ -115,6 +123,10 @@ export class FretboardModelUtil {
 
   getSelection(): SelectionModel {
     return this.selection
+  }
+
+  getHoverSelection(): SelectionModel {
+    return this.hoverSelection
   }
 
   getModel(): FretboardModel {
@@ -284,7 +296,7 @@ export class FretboardModelUtil {
     return isNil(marker) ? null : marker
   }
 
-  getMarkerX(fret: number, kind: MarkerKind): number {
+  getMarkerX(fret: number): number {
     const model = this.getModel()
     const theme = this.getTheme()
 
@@ -303,7 +315,7 @@ export class FretboardModelUtil {
     return fretsWidth + halfFretWidthToCenter + nutWidth + startOverhangWidth + unfrettedMarkerSpace + adjustment
   }
 
-  getMarkerY(stringId: string, kind: MarkerKind): number {
+  getMarkerY(stringId: string): number {
     const theme = this.getTheme()
 
     const stringIndex = this.getStringIndex(stringId)
@@ -328,9 +340,24 @@ export class FretboardModelUtil {
     return this.isPure() ? null : item
   }
 
-  isMarkerSelected(marker: MarkerModel): boolean {
+  isMarkerSelected(markerId: string): boolean {
     const selection = this.getSelection()
-    return isMarkerSelection(selection) && selection.markerId === marker.id
+    return isMarkerSelection(selection) && selection.markerId === markerId
+  }
+
+  isMarkerHovered(markerId: string): boolean {
+    const hoverSelection = this.getHoverSelection()
+    return isMarkerSelection(hoverSelection) && hoverSelection.markerId === markerId
+  }
+
+  isStringSelected(stringId: string): boolean {
+    const selection = this.getSelection()
+    return isStringSelection(selection) && selection.stringId === stringId
+  }
+
+  isStringHovered(stringId: string): boolean {
+    const selection = this.getHoverSelection()
+    return isStringSelection(selection) && selection.stringId === stringId
   }
 
   isFretboardSelected(fretboard: FretboardModel): boolean {

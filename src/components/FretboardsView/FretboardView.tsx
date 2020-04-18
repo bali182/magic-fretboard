@@ -56,11 +56,13 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   onStringSelected = (stringId: string) => {
     const { model, setSelection } = this.props
     setSelection({
-      fretboardId: model.id,
-      selection: {
-        type: 'stringSelection',
-        stringId,
-      },
+      fretboardId: isNil(stringId) ? null : model.id,
+      selection: isNil(stringId)
+        ? null
+        : {
+            type: 'stringSelection',
+            stringId,
+          },
     })
   }
 
