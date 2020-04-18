@@ -13,6 +13,7 @@ import {
   MarkerSelectionHandler,
   FretSelectionHandler,
   StringSelectionHandler,
+  FretboardSelectionHandler,
 } from './FretboardContext'
 
 export type FretboardProps = {
@@ -25,6 +26,7 @@ export type FretboardProps = {
   onMarkerSelected?: MarkerSelectionHandler
   onFretSelected?: FretSelectionHandler
   onStringSelected?: StringSelectionHandler
+  onFretboardSelected?: FretboardSelectionHandler
 }
 
 export class Fretboard extends PureComponent<FretboardProps> {
@@ -37,6 +39,7 @@ export class Fretboard extends PureComponent<FretboardProps> {
       onMarkerSelected,
       onFretSelected,
       onStringSelected,
+      onFretboardSelected,
       selection,
     } = this.props
 
@@ -45,17 +48,23 @@ export class Fretboard extends PureComponent<FretboardProps> {
     const height = util.getViewportHeight()
     const transform = util.getOrientationTransform()
 
+    const onClick = util.ifNotPure((e: React.MouseEvent) => {
+      e.stopPropagation()
+      onFretboardSelected(util.isFretboardSelected(model) ? null : model.id)
+    })
+
     const context: FretboardContextType = {
       util,
       onMarkerCreated,
       onMarkerSelected,
       onFretSelected,
       onStringSelected,
+      onFretboardSelected,
     }
 
     return (
       <FretboardContext.Provider value={context}>
-        <svg width={width} height={height} transform={transform} xmlns="http://www.w3.org/2000/svg">
+        <svg width={width} height={height} transform={transform} xmlns="http://www.w3.org/2000/svg" onClick={onClick}>
           <MarkerDefs />
           <Frets />
           <Nut />
@@ -72,5 +81,6 @@ export class Fretboard extends PureComponent<FretboardProps> {
     onFretSelected: () => {},
     onStringSelected: () => {},
     onMarkerSelected: () => {},
+    onFretboardSelected: () => {},
   }
 }

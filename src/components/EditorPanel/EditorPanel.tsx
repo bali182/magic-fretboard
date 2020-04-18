@@ -1,11 +1,14 @@
 import React, { PureComponent, ReactNode } from 'react'
 import { css } from 'emotion'
-import { SelectionModel, FretboardModel, MarkerModel } from '../Fretboard/FretboardModel'
+import { SelectionModel, FretboardModel, MarkerModel, StringModel } from '../Fretboard/FretboardModel'
 import { connect } from 'react-redux'
 import { MagicFretboardAppState } from '../../state/state'
 import isNil from 'lodash/isNil'
 import { MarkerEditor } from './MarkerEditor'
 import { updateFretboard } from '../../state/fretboards/fretboards.actionCreators'
+import { isMarkerSelection, isStringSelection, isFretboardSelection } from '../Fretboard/TypeGuards'
+import { StringEditor } from './StringEditor'
+import { FretboardEditor } from './FretboardEditor'
 
 const editorPanelStyle = css({
   height: '100vh',
@@ -70,6 +73,20 @@ export class _EditorPanel extends PureComponent<EditorPanelProps> {
     updateFretboard({ fretboard: newFretboard })
   }
 
+  private onStringChange = (string: StringModel) => {
+    const { fretboard, updateFretboard } = this.props
+    const newFretboard: FretboardModel = {
+      ...fretboard,
+      strings: fretboard.strings.map((originalString) => (originalString.id === string.id ? string : originalString)),
+    }
+    updateFretboard({ fretboard: newFretboard })
+  }
+
+  private onFretboardChange = (fretboard: FretboardModel) => {
+    const { updateFretboard } = this.props
+    updateFretboard({ fretboard })
+  }
+
   private renderHeaderLabel(): string {
     const { selection } = this.props
     if (isNil(selection)) {
@@ -92,14 +109,16 @@ export class _EditorPanel extends PureComponent<EditorPanelProps> {
     if (isNil(selection)) {
       return 'No selection'
     }
-    switch (selection.type) {
-      case 'markerSelection': {
-        const marker = fretboard.markers.find((marker) => marker.id === selection.markerId)
-        return <MarkerEditor marker={marker} onChange={this.onMarkerChange} fretboard={fretboard} />
-      }
-      default:
-        return <span>No editor available yet</span>
+    if (isMarkerSelection(selection)) {
+      const marker = fretboard.markers.find((marker) => marker.id === selection.markerId)
+      return <MarkerEditor marker={marker} onChange={this.onMarkerChange} fretboard={fretboard} />
+    } else if (isStringSelection(selection)) {
+      const string = fretboard.strings.find((string) => string.id === selection.stringId)
+      return <StringEditor string={string} onChange={this.onStringChange} />
+    } else if (isFretboardSelection(selection)) {
+      return <FretboardEditor fretboard={fretboard} onChange={this.onFretboardChange} />
     }
+    return <span>No editor available yet</span>
   }
 
   render() {

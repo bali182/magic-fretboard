@@ -45,6 +45,14 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
     })
   }
 
+  onFretboardSelected = (fretboardId: string) => {
+    const { setSelection } = this.props
+    setSelection({
+      fretboardId: isNil(fretboardId) ? null : fretboardId,
+      selection: isNil(fretboardId) ? null : { type: 'fretboardSelection' },
+    })
+  }
+
   onStringSelected = (stringId: string) => {
     const { model, setSelection } = this.props
     setSelection({
@@ -97,6 +105,7 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
           model={model}
           theme={theme}
           pure={false}
+          onFretboardSelected={this.onFretboardSelected}
           onFretSelected={this.onFretSelected}
           onStringSelected={this.onStringSelected}
           onMarkerSelected={this.onMarkerSelected}

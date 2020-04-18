@@ -13,7 +13,7 @@ import head from 'lodash/head'
 import last from 'lodash/last'
 import isNil from 'lodash/isNil'
 import range from 'lodash/range'
-import { isMarkerSelection } from './TypeGuards'
+import { isMarkerSelection, isFretboardSelection } from './TypeGuards'
 
 type MarkerMap = {
   [stringId: string]: { [fret: number]: MarkerModel }
@@ -334,5 +334,10 @@ export class FretboardModelUtil {
   isMarkerSelected(marker: MarkerModel): boolean {
     const selection = this.getSelection()
     return isMarkerSelection(selection) && selection.markerId === marker.id
+  }
+
+  isFretboardSelected(fretboard: FretboardModel): boolean {
+    const selection = this.getSelection()
+    return isFretboardSelection(selection)
   }
 }
