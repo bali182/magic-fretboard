@@ -16,12 +16,8 @@ export class EditorSelect<T> extends PureComponent<EditorSelectProps> {
   }
 
   private renderOptions() {
-    const { options, value, stringify } = this.props
-    return options.map((opt) => (
-      <option value={opt} selected={opt === value} key={opt}>
-        {stringify(opt)}
-      </option>
-    ))
+    const { options, stringify } = this.props
+    return options.map((opt) => <option value={opt} key={opt}>{stringify(opt)}</option>)
   }
 
   render() {

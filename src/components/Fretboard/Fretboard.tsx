@@ -29,9 +29,18 @@ export type FretboardProps = {
 
 export class Fretboard extends PureComponent<FretboardProps> {
   render() {
-    const { model, theme, pure, onMarkerCreated, onMarkerSelected, onFretSelected, onStringSelected } = this.props
+    const {
+      model,
+      theme,
+      pure,
+      onMarkerCreated,
+      onMarkerSelected,
+      onFretSelected,
+      onStringSelected,
+      selection,
+    } = this.props
 
-    const util = new FretboardModelUtil(model, theme, Boolean(pure))
+    const util = new FretboardModelUtil(model, theme, selection, Boolean(pure))
     const width = util.getViewportWidth()
     const height = util.getViewportHeight()
     const transform = util.getOrientationTransform()

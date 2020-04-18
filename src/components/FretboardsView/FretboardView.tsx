@@ -7,10 +7,9 @@ import { MagicFretboardAppState } from '../../state/state'
 import { setSelection } from '../../state/selection/selection.actionCreators'
 import { updateFretboard } from '../../state/fretboards/fretboards.actionCreators'
 import { nanoid } from 'nanoid'
+import isNil from 'lodash/isNil'
 
 const fretboardViewStyle = css({
-  // backgroundColor: '#eee',
-  // border: '1px solid #bbb',
   padding: '20px',
   marginBottom: '20px',
   overflowX: 'auto',
@@ -60,11 +59,13 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   onMarkerSelected = (markerId: string) => {
     const { model, setSelection } = this.props
     setSelection({
-      fretboardId: model.id,
-      selection: {
-        type: 'markerSelection',
-        markerId,
-      },
+      fretboardId: isNil(markerId) ? null : model.id,
+      selection: isNil(markerId)
+        ? null
+        : {
+            type: 'markerSelection',
+            markerId,
+          },
     })
   }
 
@@ -106,10 +107,10 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
   }
 }
 
-function mapStateToProps(state: MagicFretboardAppState, props: OwnProps): ReduxProps {
+function mapStateToProps({ theme, selection }: MagicFretboardAppState, props: OwnProps): ReduxProps {
   return {
-    theme: state.theme,
-    selection: state.selection[props.model.id],
+    theme: theme,
+    selection: isNil(selection) || selection.fretboardId !== props.model.id ? null : selection.selection,
   }
 }
 

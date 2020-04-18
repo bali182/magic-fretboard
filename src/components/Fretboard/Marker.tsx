@@ -4,13 +4,28 @@ import { MarkerModel } from './FretboardModel'
 import { MarkerDefs } from './MarkerDefs'
 import { FretboardContext } from './FretboardContext'
 import { FretboardModelUtil } from './FretboadModelUtil'
+import { css } from 'emotion'
+import { isMarkerSelection } from './TypeGuards'
+
+const markerStyle = (faded: boolean) => {
+  return css({
+    cursor: 'pointer',
+    opacity: faded ? 0.7 : 1,
+  })
+}
 
 type MarkerProps = {
   marker: MarkerModel
 }
 
 export class Marker extends PureComponent<MarkerProps> {
-  private renderLabel(util: FretboardModelUtil, onClick: React.MouseEventHandler, x: number, y: number): ReactNode {
+  private renderLabel(
+    util: FretboardModelUtil,
+    onClick: React.MouseEventHandler,
+    x: number,
+    y: number,
+    className: string
+  ): ReactNode {
     const { marker } = this.props
     if (isNil(marker.label) || marker.label.length === 0) {
       return null
@@ -18,6 +33,7 @@ export class Marker extends PureComponent<MarkerProps> {
     const { fontColor, fontFamily, fontSize } = util.getMarkerTheme(marker.kind)
     return (
       <text
+        className={className}
         transform={util.getOrientationTransform()}
         x={util.getTextXMultiplier() * x}
         y={y}
@@ -32,9 +48,9 @@ export class Marker extends PureComponent<MarkerProps> {
     )
   }
 
-  private renderShape(onClick: React.MouseEventHandler, x: number, y: number): ReactNode {
+  private renderShape(onClick: React.MouseEventHandler, x: number, y: number, className: string): ReactNode {
     const { marker } = this.props
-    return <use x={x} y={y} onClick={onClick} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
+    return <use x={x} y={y} onClick={onClick} className={className} xlinkHref={MarkerDefs.shapeRefId(marker.kind)} />
   }
 
   render() {
@@ -46,12 +62,15 @@ export class Marker extends PureComponent<MarkerProps> {
           const y = util.getMarkerY(marker.stringId, marker.kind)
           const onClick = util.ifNotPure((e: React.MouseEvent) => {
             e.stopPropagation()
-            onMarkerSelected(marker.id)
+            onMarkerSelected(util.isMarkerSelected(marker) ? null : marker.id)
           })
+          const className = util.ifNotPure(
+            markerStyle(isMarkerSelection(util.getSelection()) && !util.isMarkerSelected(marker))
+          )
           return (
             <Fragment>
-              {this.renderShape(onClick, x, y)}
-              {this.renderLabel(util, onClick, x, y)}
+              {this.renderShape(onClick, x, y, className)}
+              {this.renderLabel(util, onClick, x, y, className)}
             </Fragment>
           )
         }}

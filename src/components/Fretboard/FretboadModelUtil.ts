@@ -7,11 +7,13 @@ import {
   MarkerTheme,
   MarkerShape,
   FretboardOrientation,
+  SelectionModel,
 } from './FretboardModel'
 import head from 'lodash/head'
 import last from 'lodash/last'
 import isNil from 'lodash/isNil'
 import range from 'lodash/range'
+import { isMarkerSelection } from './TypeGuards'
 
 type MarkerMap = {
   [stringId: string]: { [fret: number]: MarkerModel }
@@ -28,11 +30,14 @@ export class FretboardModelUtil {
   private readonly stringMap: StringIndexMap
   private readonly pure: boolean
   private readonly _hasUnfrettedMarker: boolean
+  private readonly selection: SelectionModel
 
-  constructor(model: FretboardModel, theme: FretboardTheme, pure: boolean) {
+  constructor(model: FretboardModel, theme: FretboardTheme, selection: SelectionModel, pure: boolean) {
     this.model = model
     this.theme = theme
     this.pure = pure
+    this.selection = selection
+
     this.markerMap = this.buildMarkerMap()
     this.stringMap = this.buildStringMap()
     this._hasUnfrettedMarker = this.computeHasUnfrettedMarker()
@@ -107,6 +112,10 @@ export class FretboardModelUtil {
       return fret
     }
     return Math.max(0, fret - model.firstVisibleFret)
+  }
+
+  getSelection(): SelectionModel {
+    return this.selection
   }
 
   getModel(): FretboardModel {
@@ -320,5 +329,10 @@ export class FretboardModelUtil {
 
   ifNotPure<T>(item: T): T {
     return this.isPure() ? null : item
+  }
+
+  isMarkerSelected(marker: MarkerModel): boolean {
+    const selection = this.getSelection()
+    return isMarkerSelection(selection) && selection.markerId === marker.id
   }
 }
