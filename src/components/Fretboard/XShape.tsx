@@ -11,16 +11,17 @@ export class XShape extends PureComponent<XShapeProps> {
     const { theme, markerTheme } = this.props
     const radius = theme.markerRadius
     const strokeCompensation = Math.floor(markerTheme.strokeWidth / 6)
+    const shift = radius / 2
 
-    const line1X1 = -strokeCompensation + radius
-    const line1Y1 = -strokeCompensation + radius
-    const line1X2 = radius + strokeCompensation + radius
-    const line1Y2 = radius + strokeCompensation + radius
+    const line1X1 = -strokeCompensation + shift
+    const line1Y1 = -strokeCompensation + shift
+    const line1X2 = radius + strokeCompensation + shift
+    const line1Y2 = radius + strokeCompensation + shift
 
-    const line2X1 = radius + strokeCompensation + radius
-    const line2Y1 = -strokeCompensation + radius
-    const line2X2 = -strokeCompensation + radius
-    const line2Y2 = radius + strokeCompensation + radius
+    const line2X1 = radius + strokeCompensation + shift
+    const line2Y1 = -strokeCompensation + shift
+    const line2X2 = -strokeCompensation + shift
+    const line2Y2 = radius + strokeCompensation + shift
 
     return (
       <g alignmentBaseline="central">
