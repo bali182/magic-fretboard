@@ -6,8 +6,6 @@ const lineStyle = css({
   borderStyle: 'solid',
   borderTopWidth: '1px',
   height: '1px',
-  flexGrow: 1,
-  flexShrink: 1,
   flexBasis: '1px',
   marginLeft: '60px',
   marginTop: '20px',
