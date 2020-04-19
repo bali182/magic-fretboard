@@ -45,14 +45,17 @@ export class Marker extends PureComponent<MarkerProps> {
 
   private renderShape(util: FretboardModelUtil, marker: MarkerModel): ReactNode {
     const theme = util.getTheme()
-    if (isNil(marker)) {
+    const isPure = util.isPure()
+    if (!isNil(marker)) {
+      const markerTheme = util.getMarkerTheme(marker.kind)
+      if (marker.kind === MarkerKind.Muted) {
+        return <XShape markerTheme={markerTheme} theme={theme} />
+      }
+      return <CircleShape markerTheme={markerTheme} theme={theme} />
+    }
+    if (!isPure) {
       return <PlaceholderShape theme={theme} />
     }
-    const markerTheme = util.getMarkerTheme(marker.kind)
-    if (marker.kind === MarkerKind.Muted) {
-      return <XShape markerTheme={markerTheme} theme={theme} />
-    }
-    return <CircleShape markerTheme={markerTheme} theme={theme} />
   }
 
   private shouldLowerOpacity(util: FretboardModelUtil, marker: MarkerModel): boolean {

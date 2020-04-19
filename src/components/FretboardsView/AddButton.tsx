@@ -6,9 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const circleStyle = css({
   width: '50px',
   height: '50px',
-  borderColor: '#6c6c6c',
-  borderStyle: 'dashed',
-  borderWidth: '3px',
+  border: '1px solid #bbb',
   borderRadius: '25px',
   cursor: 'pointer',
   display: 'flex',
@@ -16,16 +14,25 @@ const circleStyle = css({
   alignItems: 'center',
   justifyContent: 'center',
   justifyItems: 'center',
+  boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.15)',
+  ':hover': {
+    boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.2)',
+    background: '#eee',
+  },
 })
 
 const lineStyle = css({
-  borderColor: '#6c6c6c',
-  borderStyle: 'dashed',
-  borderTopWidth: '3px',
+  borderColor: '#bbb',
+  borderStyle: 'solid',
+  borderTopWidth: '1px',
   height: '1px',
   flexGrow: 1,
   flexShrink: 1,
   flexBasis: '1px',
+})
+
+const leftLineStyle = css(lineStyle, {
+  marginLeft: '60px',
 })
 
 const containerStyle = css({
@@ -47,7 +54,7 @@ export class AddButton extends PureComponent<AddButtonProps> {
   render() {
     return (
       <div className={containerStyle} onClick={this.props.onClick}>
-        <div className={lineStyle} />
+        <div className={leftLineStyle} />
         <div className={circleStyle}>
           <FontAwesomeIcon icon={faPlus} cursor="pointer" size="lg" className={iconStyle} />
         </div>
