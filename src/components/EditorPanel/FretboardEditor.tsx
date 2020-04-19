@@ -1,8 +1,9 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import { FretboardModel, FretboardOrientation } from '../Fretboard/FretboardModel'
 import { EditorField } from './EditorField'
 import { EditorNumber } from './EditorNumber'
 import { EditorSelect } from './EditorSelect'
+import { EditorPadding } from './EditorPadding'
 
 export type FretboardEditorProps = {
   fretboard: FretboardModel
@@ -79,11 +80,11 @@ export class FretboardEditor extends PureComponent<FretboardEditorProps> {
 
   render() {
     return (
-      <Fragment>
+      <EditorPadding>
         {this.renderOrientationEditor()}
         {this.renderFirstVisibleFretEditor()}
         {this.renderLastVisibleFretEditor()}
-      </Fragment>
+      </EditorPadding>
     )
   }
 }

@@ -18,7 +18,6 @@ const containerStyle = css({
   display: 'flex',
   flexDirection: 'row',
   flexShrink: 0,
-  marginBottom: '20px',
 })
 
 const fretboardViewStyle = css({
@@ -31,9 +30,9 @@ const fretboardViewStyle = css({
   flexGrow: 1,
   flexShrink: 0,
   transition: 'box-shadow 200ms, background-color 500ms',
-  boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.15)',
+  boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.2)',
   ':hover': {
-    boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.2)',
+    boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.3)',
   },
 })
 

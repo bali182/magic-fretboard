@@ -13,7 +13,7 @@ const menuButtonStyle = css({
   width: '50px',
   height: '50px',
   borderRadius: '25px',
-  boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.2)',
+  boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.2)',
   border: '1px solid #bbb',
   cursor: 'pointer',
   display: 'flex',
@@ -24,7 +24,7 @@ const menuButtonStyle = css({
   marginBottom: '10px',
   transition: 'box-shadow 200ms, background-color 500ms',
   ':hover': {
-    boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.3)',
+    boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.3)',
   },
   ':last-child': {
     marginBottom: '0px',

@@ -1,7 +1,8 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import { StringModel } from '../Fretboard/FretboardModel'
 import { EditorField } from './EditorField'
 import { EditorString } from './EditorString'
+import { EditorPadding } from './EditorPadding'
 
 export type StringEditorProps = {
   string: StringModel
@@ -23,6 +24,6 @@ export class StringEditor extends PureComponent<StringEditorProps> {
   }
 
   render() {
-    return <Fragment>{this.renderLabelEditor()}</Fragment>
+    return <EditorPadding>{this.renderLabelEditor()}</EditorPadding>
   }
 }

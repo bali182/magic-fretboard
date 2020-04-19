@@ -1,9 +1,10 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import { MarkerModel, FretboardModel, MarkerKind } from '../Fretboard/FretboardModel'
 import { EditorField } from './EditorField'
 import { EditorString } from './EditorString'
 import { EditorSelect } from './EditorSelect'
 import { EditorNumber } from './EditorNumber'
+import { EditorPadding } from './EditorPadding'
 
 export type MarkerEditorProps = {
   marker: MarkerModel
@@ -97,12 +98,12 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
 
   render() {
     return (
-      <Fragment>
+      <EditorPadding>
         {this.renderLabelEditor()}
         {this.renderKindEditor()}
         {this.renderFretEditor()}
         {this.renderStringEditor()}
-      </Fragment>
+      </EditorPadding>
     )
   }
 }

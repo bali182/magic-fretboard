@@ -91,4 +91,8 @@ export type FretboardSelection = {
   type: 'fretboardSelection'
 }
 
-export type SelectionModel = MarkerSelection | StringSelection | FretSelection | FretboardSelection
+export type ThemeSelection = {
+  type: 'themeSelection'
+}
+
+export type SelectionModel = MarkerSelection | StringSelection | FretSelection | FretboardSelection | ThemeSelection

@@ -14,10 +14,9 @@ const circleStyle = css({
   alignItems: 'center',
   justifyContent: 'center',
   justifyItems: 'center',
-  boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.15)',
+  boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.2)',
   ':hover': {
-    boxShadow: '0px 8px 20px 0px rgba(0,0,0,0.2)',
-    background: '#eee',
+    boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.3)',
   },
 })
 
@@ -40,6 +39,7 @@ const containerStyle = css({
   flexDirection: 'row',
   alignContent: 'center',
   alignItems: 'center',
+  marginTop: '20px',
 })
 
 const iconStyle = css({

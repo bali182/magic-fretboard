@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import { css } from 'emotion'
 import { FretboardView } from './FretboardView'
 import { FretboardModel, FretboardOrientation } from '../Fretboard/FretboardModel'
@@ -8,6 +8,11 @@ import { AddButton } from './AddButton'
 import { addFretboard } from '../../state/fretboards/fretboards.actionCreators'
 import { nanoid } from 'nanoid'
 import { sixGuitarStrings } from '../Fretboard/defaultStrings'
+import { EditorHeader, EditorTitle } from '../EditorPanel/EditorHeader'
+import { FretboardMenuButton } from './FretboardMenuButton'
+import { faPalette } from '@fortawesome/free-solid-svg-icons'
+import { setSelection } from '../../state/selection/selection.actionCreators'
+import { FretboardSeparator } from './FretboardSeparator'
 
 const fretboardsViewStyle = css({
   height: '100vh',
@@ -18,6 +23,13 @@ const fretboardsViewStyle = css({
   flexShrink: 1,
   flexBasis: '1px',
   backgroundColor: '#fff',
+})
+
+const scrollAreaStyle = css({
+  flexGrow: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  overflowY: 'auto',
   padding: '20px',
 })
 
@@ -29,6 +41,7 @@ type ReduxProps = {
 
 type ActionCreatorProps = {
   addFretboard: typeof addFretboard
+  setSelection: typeof setSelection
 }
 
 export class _FretboardsView extends PureComponent<FretboardsViewProps> {
@@ -47,14 +60,28 @@ export class _FretboardsView extends PureComponent<FretboardsViewProps> {
     })
   }
 
+  private onThemeSelected = () => {
+    const { setSelection } = this.props
+    setSelection({ fretboardId: null, selection: { type: 'themeSelection' } })
+  }
+
   render() {
     const { fretboards } = this.props
     return (
       <div className={fretboardsViewStyle}>
-        {fretboards.map((fretboard) => (
-          <FretboardView model={fretboard} key={fretboard.id} />
-        ))}
-        <AddButton onClick={this.addFretboard} />
+        <EditorHeader>
+          <EditorTitle title="Fretboards" />
+          <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} />
+        </EditorHeader>
+        <div className={scrollAreaStyle}>
+          {fretboards.map((fretboard, i) => (
+            <Fragment>
+              <FretboardView model={fretboard} key={fretboard.id} />
+              {i === fretboards.length - 1 ? null : <FretboardSeparator />}
+            </Fragment>
+          ))}
+          <AddButton onClick={this.addFretboard} />
+        </div>
       </div>
     )
   }
@@ -68,6 +95,7 @@ function mapStateToProps(state: MagicFretboardAppState): ReduxProps {
 
 const actionCreators: ActionCreatorProps = {
   addFretboard,
+  setSelection,
 }
 
 export const FretboardsView = connect(mapStateToProps, actionCreators)(_FretboardsView)
