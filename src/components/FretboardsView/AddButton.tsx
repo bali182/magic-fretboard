@@ -55,7 +55,7 @@ export class AddButton extends PureComponent<AddButtonProps> {
     return (
       <div className={containerStyle} onClick={this.props.onClick}>
         <div className={leftLineStyle} />
-        <div className={circleStyle}>
+        <div className={circleStyle} data-tip="Add Fretboard">
           <FontAwesomeIcon icon={faPlus} cursor="pointer" size="lg" className={iconStyle} />
         </div>
         <div className={lineStyle} />

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import { css } from 'emotion'
+import Tooltip from 'react-tooltip'
 import { FretboardsView } from '../FretboardsView/FretboardsView'
 import { EditorPanel } from '../EditorPanel/EditorPanel'
 
@@ -14,6 +15,7 @@ export class AppLayout extends PureComponent {
   render() {
     return (
       <div className={appLayoutStyle}>
+        <Tooltip effect="solid" type="dark" />
         <FretboardsView />
         <EditorPanel />
       </div>

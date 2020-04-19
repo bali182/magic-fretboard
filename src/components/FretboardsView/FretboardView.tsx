@@ -146,12 +146,12 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
       <div className={containerStyle}>
         <FretboardMenu>
           <Top>
-            <FretboardMenuButton onClick={this.onFretboardSelectedFromMenu} icon={faCog} />
-            <FretboardMenuButton onClick={this.downloadAsPng} icon={faImage} />
-            <FretboardMenuButton onClick={this.downloadAsSvg} icon={faBezierCurve} />
+            <FretboardMenuButton onClick={this.onFretboardSelectedFromMenu} icon={faCog} tooltip="Settings" />
+            <FretboardMenuButton onClick={this.downloadAsPng} icon={faImage} tooltip="Download as PNG" />
+            <FretboardMenuButton onClick={this.downloadAsSvg} icon={faBezierCurve} tooltip="Download as SVG" />
           </Top>
           <Bottom>
-            <FretboardMenuButton onClick={this.deleteFretboard} icon={faTimes} />
+            <FretboardMenuButton onClick={this.deleteFretboard} icon={faTimes} tooltip="Delete" />
           </Bottom>
         </FretboardMenu>
         <div className={fretboardViewStyle}>

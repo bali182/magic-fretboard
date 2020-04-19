@@ -71,12 +71,12 @@ export class _FretboardsView extends PureComponent<FretboardsViewProps> {
       <div className={fretboardsViewStyle}>
         <EditorHeader>
           <EditorTitle title="Fretboards" />
-          <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} />
+          <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} tooltip="Theme Settings" />
         </EditorHeader>
         <div className={scrollAreaStyle}>
           {fretboards.map((fretboard, i) => (
-            <Fragment>
-              <FretboardView model={fretboard} key={fretboard.id} />
+            <Fragment key={fretboard.id}>
+              <FretboardView model={fretboard} />
               {i === fretboards.length - 1 ? null : <FretboardSeparator />}
             </Fragment>
           ))}

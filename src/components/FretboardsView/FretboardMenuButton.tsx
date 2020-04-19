@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 export type FretboardMenuButtonProps = {
   icon: IconProp
   onClick: () => void
+  tooltip: string
 }
 
 const menuButtonStyle = css({
@@ -33,9 +34,9 @@ const menuButtonStyle = css({
 
 export class FretboardMenuButton extends PureComponent<FretboardMenuButtonProps> {
   render() {
-    const { icon, onClick } = this.props
+    const { icon, onClick, tooltip } = this.props
     return (
-      <div className={menuButtonStyle} onClick={onClick}>
+      <div className={menuButtonStyle} onClick={onClick} data-tip={tooltip}>
         <FontAwesomeIcon icon={icon} cursor="pointer" size="lg" />
       </div>
     )
