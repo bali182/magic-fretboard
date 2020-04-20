@@ -30,17 +30,17 @@ const mutedMarkerTheme: MarkerTheme = {
   fontColor: '#fff',
   fontSize: defaultFontSize,
   fontFamily: defautlFontFamily,
-  strokeWidth: 10,
+  strokeWidth: 8,
 }
 
 const hollowMarkerTheme: MarkerTheme = {
   shape: MarkerShape.Circle,
   fillColor: 'rgba(255, 255, 255, 0.01)',
   strokeColor: '#27a9e1',
-  fontColor: '#555',
-  fontSize: defaultFontSize,
+  fontColor: '#27a9e1',
+  fontSize: 20,
   fontFamily: defautlFontFamily,
-  strokeWidth: 10,
+  strokeWidth: 8,
 }
 
 export const defaultTheme: FretboardTheme = {
