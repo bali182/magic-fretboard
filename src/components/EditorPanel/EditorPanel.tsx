@@ -12,18 +12,25 @@ import { FretboardEditor } from './FretboardEditor'
 import { EditorHeader, EditorTitle } from './EditorHeader'
 import { ThemeEditor } from './ThemeEditor'
 import { updateTheme } from '../../state/theme/theme.actionCreators'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { setSelection } from '../../state/selection/selection.actionCreators'
+import { EditorContext, EditorContextType } from './EditorContext'
 
-const editorPanelStyle = css({
-  height: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  width: '300px',
-  backgroundColor: '#fff',
-  borderLeftColor: '#bbb',
-  borderLeftWidth: '1px',
-  borderLeftStyle: 'solid',
-  boxShadow: '0px 0px 24px 0px rgba(0,0,0,0.3)',
-})
+const editorPanelStyle = (visible: boolean) =>
+  css({
+    position: 'relative',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    width: visible ? '300px' : '0px',
+    overflowX: visible ? 'auto' : 'hidden',
+    backgroundColor: '#fff',
+    borderLeftColor: '#bbb',
+    borderLeftWidth: '1px',
+    borderLeftStyle: 'solid',
+    boxShadow: '0px 0px 24px 0px rgba(0,0,0,0.3)',
+  })
 
 const scrollAreaStyle = css({
   flexGrow: 1,
@@ -41,11 +48,27 @@ type ReduxProps = {
 type ActionCreatorsProps = {
   updateFretboard: typeof updateFretboard
   updateTheme: typeof updateTheme
+  setSelection: typeof setSelection
+}
+
+export type SectionState = { [sectionId: string]: boolean }
+
+type EditorPanelState = {
+  sectionState: SectionState
 }
 
 export type EditorPanelProps = ReduxProps & ActionCreatorsProps
 
-export class _EditorPanel extends PureComponent<EditorPanelProps> {
+export class _EditorPanel extends PureComponent<EditorPanelProps, EditorPanelState> {
+  state: EditorPanelState = {
+    sectionState: {},
+  }
+
+  private removeSelection = () => {
+    const { setSelection } = this.props
+    setSelection({ selection: null, fretboardId: null })
+  }
+
   private onMarkerChange = (marker: MarkerModel) => {
     const { fretboard, updateFretboard } = this.props
     const newFretboard: FretboardModel = {
@@ -72,6 +95,15 @@ export class _EditorPanel extends PureComponent<EditorPanelProps> {
   private onThemeChange = (theme: FretboardTheme) => {
     const { updateTheme } = this.props
     updateTheme({ theme })
+  }
+
+  private setSectionState = (id: string, open: boolean) => {
+    const { sectionState } = this.state
+    this.setState({ sectionState: { ...sectionState, [id]: !open } })
+  }
+  private isSectionOpen = (id: string) => {
+    const { sectionState } = this.state
+    return !Boolean(sectionState[id])
   }
 
   private renderHeaderLabel(): string {
@@ -113,12 +145,20 @@ export class _EditorPanel extends PureComponent<EditorPanelProps> {
   }
 
   render() {
+    const { selection } = this.props
+    const editorContext: EditorContextType = {
+      isSectionOpen: this.isSectionOpen,
+      setSectionOpen: this.setSectionState,
+    }
     return (
-      <div className={editorPanelStyle}>
+      <div className={editorPanelStyle(!isNil(selection))}>
         <EditorHeader>
           <EditorTitle title={this.renderHeaderLabel()} />
+          <FontAwesomeIcon icon={faTimes} cursor="pointer" size="lg" onClick={this.removeSelection} />
         </EditorHeader>
-        <div className={scrollAreaStyle}>{this.renderEditor()}</div>
+        <div className={scrollAreaStyle}>
+          <EditorContext.Provider value={editorContext}>{this.renderEditor()}</EditorContext.Provider>
+        </div>
       </div>
     )
   }
@@ -137,8 +177,9 @@ function mapStateToProps({ selection, fretboards, theme }: MagicFretboardAppStat
 }
 
 const actionCreators: ActionCreatorsProps = {
-  updateFretboard: updateFretboard,
-  updateTheme: updateTheme,
+  updateFretboard,
+  updateTheme,
+  setSelection,
 }
 
 export const EditorPanel = connect(mapStateToProps, actionCreators)(_EditorPanel)

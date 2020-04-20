@@ -1,10 +1,11 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import { MarkerModel, FretboardModel, MarkerKind } from '../Fretboard/FretboardModel'
 import { EditorField } from './EditorField'
 import { EditorString } from './EditorString'
 import { EditorSelect } from './EditorSelect'
 import { EditorNumber } from './EditorNumber'
 import { EditorPadding } from './EditorPadding'
+import { EditorSection } from './EditorSection'
 
 export type MarkerEditorProps = {
   marker: MarkerModel
@@ -13,6 +14,11 @@ export type MarkerEditorProps = {
 }
 
 const MarkerKinds: MarkerKind[] = [MarkerKind.Default, MarkerKind.Pimary, MarkerKind.Muted, MarkerKind.Hollow]
+
+enum SectionIds {
+  VISUALS = 'VISUALS',
+  POSITION = 'POSITION',
+}
 
 export class MarkerEditor extends PureComponent<MarkerEditorProps> {
   private canHaveLabel(kind: MarkerKind): boolean {
@@ -40,6 +46,17 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
     onChange({ ...marker, stringId })
   }
 
+  renderVisualsSection() {
+    return (
+      <EditorSection title="Visuals" id={SectionIds.VISUALS}>
+        <EditorPadding>
+          {this.renderLabelEditor()}
+          {this.renderKindEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
   private renderLabelEditor() {
     const { marker } = this.props
     return (
@@ -60,6 +77,17 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
       <EditorField name="Kind" description="Kind of visual representation">
         <EditorSelect options={MarkerKinds} value={marker.kind} onChange={this.onKindChange} />
       </EditorField>
+    )
+  }
+
+  renderPositionSection() {
+    return (
+      <EditorSection title="Position" id={SectionIds.POSITION}>
+        <EditorPadding>
+          {this.renderFretEditor()}
+          {this.renderStringEditor()}
+        </EditorPadding>
+      </EditorSection>
     )
   }
 
@@ -98,12 +126,10 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
 
   render() {
     return (
-      <EditorPadding>
-        {this.renderLabelEditor()}
-        {this.renderKindEditor()}
-        {this.renderFretEditor()}
-        {this.renderStringEditor()}
-      </EditorPadding>
+      <Fragment>
+        {this.renderVisualsSection()}
+        {this.renderPositionSection()}
+      </Fragment>
     )
   }
 }

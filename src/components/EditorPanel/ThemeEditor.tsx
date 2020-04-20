@@ -11,6 +11,11 @@ export type ThemeEditorProps = {
   onChange: (model: FretboardTheme) => void
 }
 
+enum SectionIds {
+  FRETS = 'FRETS',
+  NUT = 'NUT',
+}
+
 export class ThemeEditor extends PureComponent<ThemeEditorProps> {
   private onFretWidthChanged = (fretWidth: number) => {
     const { onChange, theme } = this.props
@@ -39,7 +44,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
 
   renderNutSection() {
     return (
-      <EditorSection title="Nut">
+      <EditorSection title="Nut" id={SectionIds.NUT}>
         <EditorPadding>
           {this.renderNutWidthEditor()}
           {this.renderNutColorEditor()}
@@ -68,7 +73,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
 
   renderFretsSection() {
     return (
-      <EditorSection title="Frets">
+      <EditorSection title="Frets" id={SectionIds.FRETS}>
         <EditorPadding>
           {this.renderFretWidthEditor()}
           {this.renderFretWireWidthEditor()}
