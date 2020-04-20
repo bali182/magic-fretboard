@@ -13,6 +13,7 @@ import { FretboardMenuButton } from './FretboardMenuButton'
 import { faImage, faTimes, faCog, faBezierCurve } from '@fortawesome/free-solid-svg-icons'
 import { FretboardMenu, Top, Bottom } from './FretboardMenu'
 import { downloadAsSvg } from '../../converters/downloadAsSvg'
+import { moveNote } from './noteUtils'
 
 const containerStyle = css({
   display: 'flex',
@@ -101,13 +102,14 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
 
   private onMarkerCreated = (stringId: string, fret: number) => {
     const { updateFretboard, setSelection, model } = this.props
+    const string = model.strings.find((string) => string.id === stringId)
     const newMarker: MarkerModel = {
       id: nanoid(),
       type: 'marker',
       fret,
       stringId,
       kind: fret === 0 ? MarkerKind.Hollow : MarkerKind.Default,
-      label: '',
+      label: moveNote(string.note, fret),
     }
     const modelWithMarker: FretboardModel = {
       ...model,

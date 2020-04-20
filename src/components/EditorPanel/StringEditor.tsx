@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react'
-import { StringModel } from '../Fretboard/FretboardModel'
+import { StringModel, Note } from '../Fretboard/FretboardModel'
 import { EditorField } from './EditorField'
 import { EditorString } from './EditorString'
 import { EditorPadding } from './EditorPadding'
+import { EditorSelect } from './EditorSelect'
+import { ChromaticScaleFromC } from '../FretboardsView/noteUtils'
 
 export type StringEditorProps = {
   string: StringModel
@@ -14,6 +16,10 @@ export class StringEditor extends PureComponent<StringEditorProps> {
     const { onChange, string } = this.props
     onChange({ ...string, label })
   }
+  private onNoteChange = (note: Note) => {
+    const { onChange, string } = this.props
+    onChange({ ...string, note })
+  }
   private renderLabelEditor() {
     const { string } = this.props
     return (
@@ -22,8 +28,21 @@ export class StringEditor extends PureComponent<StringEditorProps> {
       </EditorField>
     )
   }
+  private renderNoteEditor() {
+    const { string } = this.props
+    return (
+      <EditorField name="Label" description="Short label of the string">
+        <EditorSelect value={string.note} options={ChromaticScaleFromC} onChange={this.onNoteChange} />
+      </EditorField>
+    )
+  }
 
   render() {
-    return <EditorPadding>{this.renderLabelEditor()}</EditorPadding>
+    return (
+      <EditorPadding>
+        {this.renderLabelEditor()}
+        {this.renderNoteEditor()}
+      </EditorPadding>
+    )
   }
 }

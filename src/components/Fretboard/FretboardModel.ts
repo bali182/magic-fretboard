@@ -15,6 +15,21 @@ export enum FretboardOrientation {
   RightHanded = 'RightHanded',
 }
 
+export enum Note {
+  A = 'A',
+  ASharp = 'A#',
+  B = 'B',
+  C = 'C',
+  CSharp = 'C#',
+  D = 'D',
+  DSharp = 'D#',
+  E = 'E',
+  F = 'F',
+  FSharp = 'F#',
+  G = 'G',
+  GSharp = 'G#',
+}
+
 export type MarkerModel = {
   type: 'marker'
   id: string
@@ -28,6 +43,7 @@ export type StringModel = {
   type: 'string'
   id: string
   label?: string
+  note: Note
   thickness: number
 }
 
