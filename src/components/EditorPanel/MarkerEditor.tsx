@@ -6,6 +6,7 @@ import { EditorSelect } from './EditorSelect'
 import { EditorNumber } from './EditorNumber'
 import { EditorPadding } from './EditorPadding'
 import { EditorSection } from './EditorSection'
+import { EditorBoolean } from './EditorCheckbox'
 
 export type MarkerEditorProps = {
   marker: MarkerModel
@@ -13,7 +14,7 @@ export type MarkerEditorProps = {
   onChange: (model: MarkerModel) => void
 }
 
-const MarkerKinds: MarkerKind[] = [MarkerKind.Default, MarkerKind.Pimary, MarkerKind.Muted, MarkerKind.Hollow]
+const MarkerKinds: MarkerKind[] = [MarkerKind.Default, MarkerKind.Pimary]
 
 enum SectionIds {
   VISUALS = 'VISUALS',
@@ -21,26 +22,26 @@ enum SectionIds {
 }
 
 export class MarkerEditor extends PureComponent<MarkerEditorProps> {
-  private canHaveLabel(kind: MarkerKind): boolean {
-    return kind !== MarkerKind.Hollow && kind !== MarkerKind.Muted
-  }
-
   private onLabelChange = (label: string) => {
     const { onChange, marker } = this.props
     onChange({ ...marker, label })
   }
+
   private onKindChange = (kind: MarkerKind) => {
     const { onChange, marker } = this.props
-    onChange({
-      ...marker,
-      kind,
-      label: this.canHaveLabel(kind) ? marker.label : '',
-    })
+    onChange({ ...marker, kind })
   }
+
+  private onMutedChange = (muted: boolean) => {
+    const { onChange, marker } = this.props
+    onChange({ ...marker, muted, label: muted ? null : marker.label })
+  }
+
   private onFretChange = (fret: number) => {
     const { onChange, marker } = this.props
     onChange({ ...marker, fret })
   }
+
   private onStringChange = (stringId: string) => {
     const { onChange, marker } = this.props
     onChange({ ...marker, stringId })
@@ -52,6 +53,7 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
         <EditorPadding>
           {this.renderLabelEditor()}
           {this.renderKindEditor()}
+          {this.renderMutedEdtior()}
         </EditorPadding>
       </EditorSection>
     )
@@ -61,12 +63,7 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
     const { marker } = this.props
     return (
       <EditorField name="Label" description="Short label on the marker">
-        <EditorString
-          value={marker.label}
-          maxLength={3}
-          onChange={this.onLabelChange}
-          disabled={!this.canHaveLabel(marker.kind)}
-        />
+        <EditorString value={marker.label} maxLength={3} onChange={this.onLabelChange} disabled={marker.muted} />
       </EditorField>
     )
   }
@@ -76,6 +73,15 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
     return (
       <EditorField name="Kind" description="Kind of visual representation">
         <EditorSelect options={MarkerKinds} value={marker.kind} onChange={this.onKindChange} />
+      </EditorField>
+    )
+  }
+
+  renderMutedEdtior() {
+    const { marker } = this.props
+    return (
+      <EditorField name="Muted" description="Show the marker as X or circle">
+        <EditorBoolean value={marker.muted} onChange={this.onMutedChange} />
       </EditorField>
     )
   }

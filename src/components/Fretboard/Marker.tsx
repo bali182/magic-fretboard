@@ -1,6 +1,6 @@
 import React, { PureComponent, ReactNode } from 'react'
 import isNil from 'lodash/isNil'
-import { MarkerModel, MarkerKind } from './FretboardModel'
+import { MarkerModel } from './FretboardModel'
 import { FretboardContext } from './FretboardContext'
 import { FretboardModelUtil } from './FretboadModelUtil'
 import { css } from 'emotion'
@@ -23,10 +23,13 @@ type MarkerProps = {
 
 export class Marker extends PureComponent<MarkerProps> {
   private renderLabel(util: FretboardModelUtil, marker: MarkerModel): ReactNode {
-    if (isNil(marker) || isNil(marker.label) || marker.label.length === 0) {
+    if (isNil(marker) || isNil(marker.label) || marker.label.length === 0 || marker.muted) {
       return null
     }
-    const { fontColor, fontFamily, fontSize } = util.getMarkerTheme(marker.kind)
+    const fontColor = util.getMarkerFontColor(marker)
+    const fontSize = util.getMarkerFontSize(marker)
+    const fontFamily = util.getMarkerFontFamily(marker)
+
     const { markerRadius } = util.getTheme()
     return (
       <text
@@ -47,11 +50,10 @@ export class Marker extends PureComponent<MarkerProps> {
     const theme = util.getTheme()
     const isPure = util.isPure()
     if (!isNil(marker)) {
-      const markerTheme = util.getMarkerTheme(marker.kind)
-      if (marker.kind === MarkerKind.Muted) {
-        return <XShape markerTheme={markerTheme} theme={theme} />
+      if (marker.muted) {
+        return <XShape marker={marker} />
       }
-      return <CircleShape markerTheme={markerTheme} theme={theme} />
+      return <CircleShape marker={marker} />
     }
     if (!isPure) {
       return <PlaceholderShape theme={theme} />

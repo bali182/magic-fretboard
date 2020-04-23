@@ -1,13 +1,6 @@
 export enum MarkerKind {
   Default = 'Default',
   Pimary = 'Primary',
-  Muted = 'Muted',
-  Hollow = 'Hollow',
-}
-
-export enum MarkerShape {
-  Circle = 'Circle',
-  X = 'X',
 }
 
 export enum FretboardOrientation {
@@ -36,6 +29,7 @@ export type MarkerModel = {
   label: string
   fret: number
   stringId: string
+  muted: boolean
   kind: MarkerKind
 }
 
@@ -47,16 +41,6 @@ export type StringModel = {
   thickness: number
 }
 
-export type MarkerTheme = {
-  fillColor: string
-  strokeColor: string
-  strokeWidth: number
-  fontColor: string
-  fontSize: number
-  fontFamily: string
-  shape: MarkerShape
-}
-
 export type FretboardTheme = {
   // Dimensions
   fretWidth: number
@@ -65,17 +49,25 @@ export type FretboardTheme = {
   stringSpacing: number
   stringOverhang: number
   markerRadius: number
-  hollowMarkerOutlineWidth: number
   markerToNutSpace: number
   // Colors
   nutColor: string
   fretWireColor: string
   stringColor: string
-  // Marker styles
-  defaultMarkerTheme: MarkerTheme
-  primaryMarkerTheme: MarkerTheme
-  mutedMarkerTheme: MarkerTheme
-  hollowMarkerTheme: MarkerTheme
+
+  markerFontSize: number
+  markerFontFamily: string
+
+  defaultMarkerColor: string
+  defaultMarkerFontColor: string
+
+  primaryMarkerColor: string
+  primaryMarkerFontColor: string
+
+  hollowMarkerStrokeWidth: number
+  hollowMarkerFontSize: number
+
+  mutedMarkerStrokeWidth: number
 }
 
 export type FretboardModel = {

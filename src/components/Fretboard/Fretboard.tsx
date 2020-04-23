@@ -34,7 +34,6 @@ export type FretboardState = {
 }
 
 export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
-  
   state: FretboardState = {
     hoverSelection: null,
   }
@@ -81,11 +80,6 @@ export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
     const height = util.getViewportHeight()
     const transform = util.getOrientationTransform()
 
-    const onClick = util.ifNotPure((e: React.MouseEvent) => {
-      e.stopPropagation()
-      onFretboardSelected(util.isFretboardSelected(model) ? null : model.id)
-    })
-
     const context: FretboardContextType = {
       util,
       onMarkerCreated,
@@ -99,7 +93,7 @@ export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
 
     return (
       <FretboardContext.Provider value={context}>
-        <svg width={width} height={height} transform={transform} xmlns="http://www.w3.org/2000/svg" onClick={onClick}>
+        <svg width={width} height={height} transform={transform} xmlns="http://www.w3.org/2000/svg">
           <Frets />
           <Nut />
           <GuitarStrings />

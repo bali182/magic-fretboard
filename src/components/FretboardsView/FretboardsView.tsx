@@ -71,7 +71,7 @@ export class _FretboardsView extends PureComponent<FretboardsViewProps> {
       <div className={fretboardsViewStyle}>
         <EditorHeader>
           <EditorTitle title="Fretboards" />
-          <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} tooltip="Theme Settings" />
+          <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} tooltip="Edit theme" />
         </EditorHeader>
         <div className={scrollAreaStyle}>
           {fretboards.map((fretboard, i) => (

@@ -31,7 +31,7 @@ export class StringEditor extends PureComponent<StringEditorProps> {
   private renderNoteEditor() {
     const { string } = this.props
     return (
-      <EditorField name="Label" description="Short label of the string">
+      <EditorField name="Note" description="The note of the string when not fretted">
         <EditorSelect value={string.note} options={ChromaticScaleFromC} onChange={this.onNoteChange} />
       </EditorField>
     )

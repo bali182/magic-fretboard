@@ -108,7 +108,8 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
       type: 'marker',
       fret,
       stringId,
-      kind: fret === 0 ? MarkerKind.Hollow : MarkerKind.Default,
+      kind: MarkerKind.Default,
+      muted: false,
       label: moveNote(string.note, fret),
     }
     const modelWithMarker: FretboardModel = {
@@ -148,12 +149,12 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
       <div className={containerStyle}>
         <FretboardMenu>
           <Top>
-            <FretboardMenuButton onClick={this.onFretboardSelectedFromMenu} icon={faCog} tooltip="Settings" />
+            <FretboardMenuButton onClick={this.onFretboardSelectedFromMenu} icon={faCog} tooltip="Fretboard configuration" />
             <FretboardMenuButton onClick={this.downloadAsPng} icon={faImage} tooltip="Download as PNG" />
             <FretboardMenuButton onClick={this.downloadAsSvg} icon={faBezierCurve} tooltip="Download as SVG" />
           </Top>
           <Bottom>
-            <FretboardMenuButton onClick={this.deleteFretboard} icon={faTimes} tooltip="Delete" />
+            <FretboardMenuButton onClick={this.deleteFretboard} icon={faTimes} tooltip="Delete fretboard" />
           </Bottom>
         </FretboardMenu>
         <div className={fretboardViewStyle}>

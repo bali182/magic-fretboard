@@ -4,7 +4,6 @@ import {
   MarkerModel,
   MarkerKind,
   FretboardTheme,
-  MarkerTheme,
   FretboardOrientation,
   SelectionModel,
 } from './FretboardModel'
@@ -141,21 +140,74 @@ export class FretboardModelUtil {
     return this.pure
   }
 
-  getMarkerTheme(kind: MarkerKind): MarkerTheme {
+  private getMarkerColor(kind: MarkerKind): string {
     const theme = this.getTheme()
-
     switch (kind) {
-      case MarkerKind.Default:
-        return theme.defaultMarkerTheme
-      case MarkerKind.Muted:
-        return theme.mutedMarkerTheme
       case MarkerKind.Pimary:
-        return theme.primaryMarkerTheme
-      case MarkerKind.Hollow:
-        return theme.hollowMarkerTheme
+        return theme.primaryMarkerColor
       default:
-        return null
+        return theme.defaultMarkerColor
     }
+  }
+
+  getMarkerFillColor(marker: MarkerModel): string {
+    if (marker.muted) {
+      return 'none'
+    }
+    if (marker.fret === 0) {
+      return 'rgba(255, 255, 255, 0.01)'
+    }
+    return this.getMarkerColor(marker.kind)
+  }
+
+  getMarkerStrokeColor(marker: MarkerModel): string {
+    if (!marker.muted && marker.fret > 0) {
+      return 'none'
+    }
+    return this.getMarkerColor(marker.kind)
+  }
+
+  getMarkerStrokeWidth(marker: MarkerModel): number {
+    const theme = this.getTheme()
+    if (marker.muted) {
+      return theme.mutedMarkerStrokeWidth
+    }
+    if (marker.fret === 0) {
+      return theme.hollowMarkerStrokeWidth
+    }
+    return 0
+  }
+
+  getMarkerFontColor(marker: MarkerModel): string {
+    const theme = this.getTheme()
+    if (marker.muted) {
+      return null
+    }
+    if (marker.fret === 0) {
+      return this.getMarkerColor(marker.kind)
+    }
+    switch (marker.kind) {
+      case MarkerKind.Pimary:
+        return theme.primaryMarkerFontColor
+      default:
+        return theme.defaultMarkerFontColor
+    }
+  }
+
+  getMarkerFontSize(marker: MarkerModel): number {
+    const theme = this.getTheme()
+    if (marker.muted) {
+      return null
+    }
+    if (marker.fret === 0) {
+      return theme.hollowMarkerFontSize
+    }
+    return theme.markerFontSize
+  }
+
+  getMarkerFontFamily(marker: MarkerModel): string {
+    const theme = this.getTheme()
+    return theme.markerFontFamily
   }
 
   protected getMarkerMap(): MarkerMap {
