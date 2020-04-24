@@ -41,6 +41,7 @@ export class GuitarString extends PureComponent<GuitarStringProps> {
           const x1 = util.getStringX1(string.id)
           const x2 = util.getStringX2(string.id)
           const y = util.getStringY(string.id)
+          const thickness = util.getStringThickness(string.id)
           const shouldLowerOpacity = this.shouldLowerOpacity(util, string)
           const className = util.ifNotPure(stringStyle(shouldLowerOpacity))
           const onClick = util.ifNotPure((e: React.MouseEvent<SVGLineElement>) => {
@@ -57,7 +58,7 @@ export class GuitarString extends PureComponent<GuitarStringProps> {
               x2={x2}
               y1={y}
               y2={y}
-              strokeWidth={string.thickness}
+              strokeWidth={thickness}
               key={string.id}
               onClick={onClick}
               onMouseEnter={onMouseEnter}

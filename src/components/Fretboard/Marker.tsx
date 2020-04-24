@@ -8,6 +8,7 @@ import { isMarkerSelection } from './TypeGuards'
 import { XShape } from './XShape'
 import { CircleShape } from './CircleShape'
 import { PlaceholderShape } from './PlaceholderShape'
+import { DeleteButton } from './DeleteButton'
 
 const markerStyle = (lowerOpacity: boolean) =>
   css({
@@ -46,6 +47,13 @@ export class Marker extends PureComponent<MarkerProps> {
     )
   }
 
+  private renderDeleteButton(util: FretboardModelUtil, marker: MarkerModel): ReactNode {
+    if (isNil(marker) || util.isPure() || !util.isMarkerHovered(marker.id)) {
+      return null
+    }
+    return <DeleteButton marker={marker} />
+  }
+
   private renderShape(util: FretboardModelUtil, marker: MarkerModel): ReactNode {
     const theme = util.getTheme()
     const isPure = util.isPure()
@@ -78,7 +86,7 @@ export class Marker extends PureComponent<MarkerProps> {
     const { fret, stringId } = this.props
     return (
       <FretboardContext.Consumer>
-        {({ util, onMarkerSelected, onMarkerCreated, onMarkerHovered }) => {
+        {({ util, onMarkerSelected, onMarkerCreated, onMarkerHovered, onMarkerDeleted }) => {
           const marker = util.getMarker(stringId, fret)
           const x = util.getMarkerX(fret)
           const y = util.getMarkerY(stringId)
@@ -117,6 +125,7 @@ export class Marker extends PureComponent<MarkerProps> {
               onMouseLeave={onMouseLeave}>
               {this.renderShape(util, marker)}
               {this.renderLabel(util, marker)}
+              {this.renderDeleteButton(util, marker)}
             </svg>
           )
         }}

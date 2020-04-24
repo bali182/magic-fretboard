@@ -10,10 +10,10 @@ import { nanoid } from 'nanoid'
 import isNil from 'lodash/isNil'
 import { downloadAsPng } from '../../converters/downloadAsPng'
 import { FretboardMenuButton } from './FretboardMenuButton'
-import { faImage, faTimes, faCog, faBezierCurve } from '@fortawesome/free-solid-svg-icons'
+import { faImage, faTimes, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FretboardMenu, Top, Bottom } from './FretboardMenu'
-import { downloadAsSvg } from '../../converters/downloadAsSvg'
-import { moveNote } from './noteUtils'
+import { getNoteByStringAndFret } from '../../noteUtils'
+import { isMarkerSelection } from '../Fretboard/TypeGuards'
 
 const containerStyle = css({
   display: 'flex',
@@ -100,9 +100,23 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
     })
   }
 
+  private onMarkerDeleted = (markerId: string) => {
+    const { model, selection, setSelection, updateFretboard } = this.props
+    // Unset selection
+    if (isMarkerSelection(selection) && selection.markerId === markerId) {
+      setSelection({ fretboardId: null, selection: null })
+    }
+    // Remove from fretboard
+    updateFretboard({
+      fretboard: {
+        ...model,
+        markers: model.markers.filter((marker) => marker.id !== markerId),
+      },
+    })
+  }
+
   private onMarkerCreated = (stringId: string, fret: number) => {
     const { updateFretboard, setSelection, model } = this.props
-    const string = model.strings.find((string) => string.id === stringId)
     const newMarker: MarkerModel = {
       id: nanoid(),
       type: 'marker',
@@ -110,7 +124,7 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
       stringId,
       kind: MarkerKind.Default,
       muted: false,
-      label: moveNote(string.note, fret),
+      label: getNoteByStringAndFret(model, stringId, fret),
     }
     const modelWithMarker: FretboardModel = {
       ...model,
@@ -130,10 +144,6 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
     downloadAsPng(this.props.model, this.props.theme)
   }
 
-  private downloadAsSvg = () => {
-    downloadAsSvg(this.props.model, this.props.theme)
-  }
-
   private deleteFretboard = () => {
     const { deleteFretboard } = this.props
     deleteFretboard({ id: this.props.model.id })
@@ -149,9 +159,12 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
       <div className={containerStyle}>
         <FretboardMenu>
           <Top>
-            <FretboardMenuButton onClick={this.onFretboardSelectedFromMenu} icon={faCog} tooltip="Fretboard configuration" />
+            <FretboardMenuButton
+              onClick={this.onFretboardSelectedFromMenu}
+              icon={faCog}
+              tooltip="Fretboard configuration"
+            />
             <FretboardMenuButton onClick={this.downloadAsPng} icon={faImage} tooltip="Download as PNG" />
-            <FretboardMenuButton onClick={this.downloadAsSvg} icon={faBezierCurve} tooltip="Download as SVG" />
           </Top>
           <Bottom>
             <FretboardMenuButton onClick={this.deleteFretboard} icon={faTimes} tooltip="Delete fretboard" />
@@ -168,6 +181,7 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
             onStringSelected={this.onStringSelected}
             onMarkerSelected={this.onMarkerSelected}
             onMarkerCreated={this.onMarkerCreated}
+            onMarkerDeleted={this.onMarkerDeleted}
           />
         </div>
       </div>

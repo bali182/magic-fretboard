@@ -9,12 +9,14 @@ import {
   FretboardContext,
   FretboardContextType,
   MarkerCreationHandler,
-  MarkerSelectionHandler,
+  MarkerActionHandler,
   FretSelectionHandler,
   StringSelectionHandler,
   FretboardSelectionHandler,
 } from './FretboardContext'
 import isNil from 'lodash/isNil'
+
+const noop = () => {}
 
 export type FretboardProps = {
   model: FretboardModel
@@ -23,7 +25,8 @@ export type FretboardProps = {
   pure?: boolean
 
   onMarkerCreated?: MarkerCreationHandler
-  onMarkerSelected?: MarkerSelectionHandler
+  onMarkerDeleted?: MarkerActionHandler
+  onMarkerSelected?: MarkerActionHandler
   onFretSelected?: FretSelectionHandler
   onStringSelected?: StringSelectionHandler
   onFretboardSelected?: FretboardSelectionHandler
@@ -67,6 +70,7 @@ export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
       pure,
       onMarkerCreated,
       onMarkerSelected,
+      onMarkerDeleted,
       onFretSelected,
       onStringSelected,
       onFretboardSelected,
@@ -87,6 +91,7 @@ export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
       onFretSelected,
       onStringSelected,
       onFretboardSelected,
+      onMarkerDeleted,
       onMarkerHovered: this.onMarkerHovered,
       onStringHovered: this.onStringHovered,
     }
@@ -105,10 +110,11 @@ export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
 
   static defaultProps: Partial<FretboardProps> = {
     pure: false,
-    onMarkerCreated: () => {},
-    onFretSelected: () => {},
-    onStringSelected: () => {},
-    onMarkerSelected: () => {},
-    onFretboardSelected: () => {},
+    onMarkerCreated: noop,
+    onFretSelected: noop,
+    onStringSelected: noop,
+    onMarkerSelected: noop,
+    onFretboardSelected: noop,
+    onMarkerDeleted: noop,
   }
 }

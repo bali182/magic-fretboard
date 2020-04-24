@@ -11,13 +11,19 @@ export type EditorSelectProps = {
 
 export class EditorSelect<T> extends PureComponent<EditorSelectProps> {
   private onChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { onChange } = this.props
-    onChange(e.target.value)
+    const { onChange, value } = this.props
+    if (e.target.value !== value) {
+      onChange(e.target.value)
+    }
   }
 
   private renderOptions() {
     const { options, stringify } = this.props
-    return options.map((opt) => <option value={opt} key={opt}>{stringify(opt)}</option>)
+    return options.map((opt) => (
+      <option value={opt} key={opt}>
+        {stringify(opt)}
+      </option>
+    ))
   }
 
   render() {

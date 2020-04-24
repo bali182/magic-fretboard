@@ -7,6 +7,7 @@ import { EditorNumber } from './EditorNumber'
 import { EditorPadding } from './EditorPadding'
 import { EditorSection } from './EditorSection'
 import { EditorBoolean } from './EditorCheckbox'
+import { updateNoteLabel } from '../../noteUtils'
 
 export type MarkerEditorProps = {
   marker: MarkerModel
@@ -38,13 +39,21 @@ export class MarkerEditor extends PureComponent<MarkerEditorProps> {
   }
 
   private onFretChange = (fret: number) => {
-    const { onChange, marker } = this.props
-    onChange({ ...marker, fret })
+    const { onChange, marker, fretboard } = this.props
+    const newMarker = { ...marker, fret }
+    onChange({
+      ...newMarker,
+      label: updateNoteLabel(fretboard, marker, newMarker),
+    })
   }
 
   private onStringChange = (stringId: string) => {
-    const { onChange, marker } = this.props
-    onChange({ ...marker, stringId })
+    const { onChange, marker, fretboard } = this.props
+    const newMarker = { ...marker, stringId }
+    onChange({
+      ...newMarker,
+      label: updateNoteLabel(fretboard, marker, newMarker),
+    })
   }
 
   renderVisualsSection() {

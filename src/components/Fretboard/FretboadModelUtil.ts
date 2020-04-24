@@ -11,7 +11,13 @@ import head from 'lodash/head'
 import last from 'lodash/last'
 import isNil from 'lodash/isNil'
 import range from 'lodash/range'
-import { isMarkerSelection, isFretboardSelection, isStringSelection } from './TypeGuards'
+import {
+  isMarkerSelection,
+  isFretboardSelection,
+  isStringSelection,
+  isInterpolatedStringThicknessModel,
+  isUniformStringThicknessModel,
+} from './TypeGuards'
 
 type MarkerMap = {
   [stringId: string]: { [fret: number]: MarkerModel }
@@ -68,15 +74,15 @@ export class FretboardModelUtil {
   }
 
   private getTopOverhang(): number {
-    const model = this.getModel()
     const theme = this.getTheme()
-    return Math.max(head(model.strings).thickness / 2, theme.markerRadius)
+    const topStringThickness = this.getTopStringThickness()
+    return Math.max(Math.round(topStringThickness / 2), theme.markerRadius)
   }
 
   private getBottomOverhang(): number {
-    const model = this.getModel()
     const theme = this.getTheme()
-    return Math.max(last(model.strings).thickness / 2, theme.markerRadius)
+    const bottomStringThickness = this.getBottomStringThickness()
+    return Math.max(bottomStringThickness / 2, theme.markerRadius)
   }
 
   private computeHasUnfrettedMarker(): boolean {
@@ -287,6 +293,36 @@ export class FretboardModelUtil {
   getStringX2(stringId: string): number {
     // TODO
     return this.getViewportWidth()
+  }
+
+  private linearInterpolation(start: number, end: number, ratio: number): number {
+    return Math.floor((1 - ratio) * start + ratio * end)
+  }
+
+  getStringThickness(stringId: string): number {
+    const { stringThickness } = this.getTheme()
+    if (isInterpolatedStringThicknessModel(stringThickness)) {
+      const model = this.getModel()
+      const index = this.getStringIndex(stringId)
+      return this.linearInterpolation(
+        stringThickness.topStringThickness,
+        stringThickness.bottomStringThickness,
+        index / model.strings.length
+      )
+    } else if (isUniformStringThicknessModel(stringThickness)) {
+      return stringThickness.thickness
+    }
+    return 1
+  }
+
+  getTopStringThickness(): number {
+    const model = this.getModel()
+    return this.getStringThickness(head(model.strings).id)
+  }
+
+  getBottomStringThickness(): number {
+    const model = this.getModel()
+    return this.getStringThickness(last(model.strings).id)
   }
 
   getFretCount(): number {

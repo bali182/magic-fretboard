@@ -1,21 +1,23 @@
 import React, { PureComponent, ReactNode } from 'react'
+import isNil from 'lodash/isNil'
+import values from 'lodash/values'
 import { css } from 'emotion'
 import { SelectionModel, FretboardModel, MarkerModel, StringModel, FretboardTheme } from '../Fretboard/FretboardModel'
 import { connect } from 'react-redux'
 import { MagicFretboardAppState } from '../../state/state'
-import isNil from 'lodash/isNil'
 import { MarkerEditor } from './MarkerEditor'
 import { updateFretboard } from '../../state/fretboards/fretboards.actionCreators'
 import { isMarkerSelection, isStringSelection, isFretboardSelection, isThemeSelection } from '../Fretboard/TypeGuards'
 import { StringEditor } from './StringEditor'
 import { FretboardEditor } from './FretboardEditor'
 import { EditorHeader, EditorTitle } from './EditorHeader'
-import { ThemeEditor } from './ThemeEditor'
+import { ThemeEditor, ThemeSectionIds } from './ThemeEditor'
 import { updateTheme } from '../../state/theme/theme.actionCreators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { setSelection } from '../../state/selection/selection.actionCreators'
 import { EditorContext, EditorContextType } from './EditorContext'
+import { updateNoteLabels } from '../../noteUtils'
 
 const editorPanelStyle = (visible: boolean) =>
   css({
@@ -54,14 +56,14 @@ type ActionCreatorsProps = {
 export type SectionState = { [sectionId: string]: boolean }
 
 type EditorPanelState = {
-  sectionState: SectionState
+  closedSections: SectionState
 }
 
 export type EditorPanelProps = ReduxProps & ActionCreatorsProps
 
 export class _EditorPanel extends PureComponent<EditorPanelProps, EditorPanelState> {
   state: EditorPanelState = {
-    sectionState: {},
+    closedSections: values(ThemeSectionIds).reduce((sections, key) => ({ ...sections, [key]: true }), {}),
   }
 
   private removeSelection = () => {
@@ -78,12 +80,20 @@ export class _EditorPanel extends PureComponent<EditorPanelProps, EditorPanelSta
     updateFretboard({ fretboard: newFretboard })
   }
 
-  private onStringChange = (string: StringModel) => {
+  private onStringChange = (newString: StringModel) => {
     const { fretboard, updateFretboard } = this.props
+    const oldString = fretboard.strings.find((s) => s.id === newString.id)
+    const newStrings = fretboard.strings.map((originalString) =>
+      originalString.id === newString.id ? newString : originalString
+    )
+    const newMarkers = updateNoteLabels(fretboard.markers, oldString, newString)
+
     const newFretboard: FretboardModel = {
       ...fretboard,
-      strings: fretboard.strings.map((originalString) => (originalString.id === string.id ? string : originalString)),
+      strings: newStrings,
+      markers: newMarkers,
     }
+
     updateFretboard({ fretboard: newFretboard })
   }
 
@@ -98,12 +108,12 @@ export class _EditorPanel extends PureComponent<EditorPanelProps, EditorPanelSta
   }
 
   private setSectionState = (id: string, open: boolean) => {
-    const { sectionState } = this.state
-    this.setState({ sectionState: { ...sectionState, [id]: !open } })
+    const { closedSections } = this.state
+    this.setState({ closedSections: { ...closedSections, [id]: !open } })
   }
   private isSectionOpen = (id: string) => {
-    const { sectionState } = this.state
-    return !Boolean(sectionState[id])
+    const { closedSections } = this.state
+    return !Boolean(closedSections[id])
   }
 
   private renderHeaderLabel(): string {

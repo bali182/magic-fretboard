@@ -41,6 +41,19 @@ export type StringModel = {
   thickness: number
 }
 
+export type StringThicknessModel = UniformStringThicknessModel | InterpolatedStringThicknessModel
+
+export type UniformStringThicknessModel = {
+  type: 'UniformStringThicknessModel'
+  thickness: number
+}
+
+export type InterpolatedStringThicknessModel = {
+  type: 'InterpolatedStringThicknessModel'
+  topStringThickness: number
+  bottomStringThickness: number
+}
+
 export type FretboardTheme = {
   // Dimensions
   fretWidth: number
@@ -50,23 +63,24 @@ export type FretboardTheme = {
   stringOverhang: number
   markerRadius: number
   markerToNutSpace: number
+
+  // String thickness
+  stringThickness: StringThicknessModel
+
   // Colors
   nutColor: string
   fretWireColor: string
   stringColor: string
 
+  // Markers
   markerFontSize: number
   markerFontFamily: string
-
   defaultMarkerColor: string
   defaultMarkerFontColor: string
-
   primaryMarkerColor: string
   primaryMarkerFontColor: string
-
   hollowMarkerStrokeWidth: number
   hollowMarkerFontSize: number
-
   mutedMarkerStrokeWidth: number
 }
 

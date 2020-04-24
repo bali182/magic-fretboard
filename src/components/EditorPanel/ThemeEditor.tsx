@@ -1,19 +1,24 @@
 import React, { PureComponent, Fragment } from 'react'
-import { FretboardTheme } from '../Fretboard/FretboardModel'
+import { FretboardTheme, StringThicknessModel } from '../Fretboard/FretboardModel'
 import { EditorField } from './EditorField'
 import { EditorNumber } from './EditorNumber'
 import { EditorSection } from './EditorSection'
 import { EditorString } from './EditorString'
 import { EditorPadding } from './EditorPadding'
+import { StringThicknessEditor } from './StringThicknessEditor'
 
 export type ThemeEditorProps = {
   theme: FretboardTheme
   onChange: (model: FretboardTheme) => void
 }
 
-enum SectionIds {
+export enum ThemeSectionIds {
   FRETS = 'FRETS',
   NUT = 'NUT',
+  STRINGS = 'STRINGS',
+  MARKERS_COMMON = 'MARKERS_COMMON',
+  MARKERS_DEFAULT = 'MARKERS_DEFAULT',
+  MARKERS_PRIMARY = 'MARKERS_PRIMARY',
 }
 
 export class ThemeEditor extends PureComponent<ThemeEditorProps> {
@@ -42,9 +47,84 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     onChange({ ...theme, nutColor })
   }
 
-  renderNutSection() {
+  private onStringSpacingChanged = (stringSpacing: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, stringSpacing })
+  }
+
+  private onStringOverhangChanged = (stringOverhang: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, stringOverhang })
+  }
+
+  private onStringColorChanged = (stringColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, stringColor })
+  }
+
+  private onStringThicknessChanged = (stringThickness: StringThicknessModel) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, stringThickness })
+  }
+
+  private onMarkerRadiusChanged = (markerRadius: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, markerRadius })
+  }
+
+  private onMarkerToNutSpaceChanged = (markerToNutSpace: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, markerToNutSpace })
+  }
+
+  private onMarkerFontSizeChanged = (markerFontSize: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, markerFontSize })
+  }
+
+  private onMarkerFontFamilyChanged = (markerFontFamily: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, markerFontFamily })
+  }
+
+  private onDefaultMarkerColorChanged = (defaultMarkerColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, defaultMarkerColor })
+  }
+
+  private onDefaultMarkerFontColorChanged = (defaultMarkerFontColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, defaultMarkerFontColor })
+  }
+
+  private onPrimaryMarkerColorChanged = (primaryMarkerColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, primaryMarkerColor })
+  }
+
+  private onPrimaryMarkerFontColorChanged = (primaryMarkerFontColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, primaryMarkerFontColor })
+  }
+
+  private onHollowMarkerStrokeWidthChanged = (hollowMarkerStrokeWidth: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, hollowMarkerStrokeWidth })
+  }
+
+  private onHollowMarkerFontSizeChanged = (hollowMarkerFontSize: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, hollowMarkerFontSize })
+  }
+
+  private onMutedMarkerStrokeWidthChanged = (mutedMarkerStrokeWidth: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, mutedMarkerStrokeWidth })
+  }
+
+  private renderNutSection() {
     return (
-      <EditorSection title="Nut" id={SectionIds.NUT}>
+      <EditorSection title="Nut" id={ThemeSectionIds.NUT}>
         <EditorPadding>
           {this.renderNutWidthEditor()}
           {this.renderNutColorEditor()}
@@ -53,7 +133,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
-  renderNutWidthEditor() {
+  private renderNutWidthEditor() {
     const { theme } = this.props
     return (
       <EditorField name="Nut width" description="Width of the nut in pixels">
@@ -62,7 +142,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
-  renderNutColorEditor() {
+  private renderNutColorEditor() {
     const { theme } = this.props
     return (
       <EditorField name="Nut color" description="Color of the nut (hex or rgba)">
@@ -71,9 +151,9 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
-  renderFretsSection() {
+  private renderFretsSection() {
     return (
-      <EditorSection title="Frets" id={SectionIds.FRETS}>
+      <EditorSection title="Frets" id={ThemeSectionIds.FRETS}>
         <EditorPadding>
           {this.renderFretWidthEditor()}
           {this.renderFretWireWidthEditor()}
@@ -83,7 +163,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
-  renderFretWidthEditor() {
+  private renderFretWidthEditor() {
     const { theme } = this.props
     return (
       <EditorField name="Fret width" description="Width of the frets in pixels">
@@ -92,7 +172,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
-  renderFretWireWidthEditor() {
+  private renderFretWireWidthEditor() {
     const { theme } = this.props
     return (
       <EditorField name="Fret wire width" description="Width of the fret wire in pixels">
@@ -101,11 +181,201 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
-  renderFretWireColor() {
+  private renderFretWireColor() {
     const { theme } = this.props
     return (
       <EditorField name="Fret wire color" description="Color of the fret wire (hex or rgba)">
         <EditorString value={theme.fretWireColor} onChange={this.onFretWireColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderStringsSection() {
+    return (
+      <EditorSection title="Strings" id={ThemeSectionIds.STRINGS}>
+        <EditorPadding>
+          {this.renderStringThicknessEditor()}
+          {this.renderStringSpacingEditor()}
+          {this.renderStringOverhangEditor()}
+          {this.renderStringColorEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
+  private renderStringThicknessEditor() {
+    const { theme } = this.props
+    return <StringThicknessEditor onChange={this.onStringThicknessChanged} value={theme.stringThickness} />
+  }
+
+  private renderStringSpacingEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="String spacing" description="Space between strings in pixels">
+        <EditorNumber value={theme.stringSpacing} minValue={1} onChange={this.onStringSpacingChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderStringOverhangEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="String overhang" description="Overhang on first and last fret in pixels">
+        <EditorNumber value={theme.stringOverhang} minValue={0} onChange={this.onStringOverhangChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderStringColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="String color" description="Color of the strings in rgba or hex">
+        <EditorString value={theme.stringColor} onChange={this.onStringColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderMarkersCommonSection() {
+    return (
+      <EditorSection title="Markers (Common)" id={ThemeSectionIds.MARKERS_COMMON}>
+        <EditorPadding>
+          {this.renderMarkerRadiusEditor()}
+          {this.renderMarkerFontSizeEditor()}
+          {this.renderMarkerFontFamilyEditor()}
+          {this.renderMarkerToNutSpaceEditor()}
+          {this.renderHollowMarkerStrokeWidthEditor()}
+          {this.renderHollowMarkerFontSizeEditor()}
+          {this.renderMutedMarkerStrokeWidthEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
+  private renderMarkerRadiusEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Radius" description="Radius of markers in pixels">
+        <EditorNumber value={theme.markerRadius} minValue={1} onChange={this.onMarkerRadiusChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderMarkerToNutSpaceEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Space between marker and nut" description="Space in pixels">
+        <EditorNumber value={theme.markerToNutSpace} minValue={0} onChange={this.onMarkerToNutSpaceChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderMarkerFontSizeEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Font size" description="Font size of label on markers in pixels">
+        <EditorNumber value={theme.markerFontSize} minValue={5} onChange={this.onMarkerFontSizeChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderMarkerFontFamilyEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Font family" description="Font for labels appearing on markers">
+        <EditorString value={theme.markerFontFamily} onChange={this.onMarkerFontFamilyChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderHollowMarkerStrokeWidthEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Hollow stroke width" description="Stroke width on markers on unfretted notes in pixels">
+        <EditorNumber
+          value={theme.hollowMarkerStrokeWidth}
+          minValue={1}
+          onChange={this.onHollowMarkerStrokeWidthChanged}
+        />
+      </EditorField>
+    )
+  }
+
+  private renderHollowMarkerFontSizeEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Hollow font size" description="Font size on markers on unfretted notes in pixels">
+        <EditorNumber value={theme.hollowMarkerFontSize} onChange={this.onHollowMarkerFontSizeChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderMutedMarkerStrokeWidthEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Muted stroke width" description="Stroke width on muted markers in pixels">
+        <EditorNumber
+          value={theme.mutedMarkerStrokeWidth}
+          minValue={1}
+          onChange={this.onMutedMarkerStrokeWidthChanged}
+        />
+      </EditorField>
+    )
+  }
+
+  private renderMarkersDefaultSection() {
+    return (
+      <EditorSection title="Markers (Default type)" id={ThemeSectionIds.MARKERS_DEFAULT}>
+        <EditorPadding>
+          {this.renderDefaultMarkerColorEditor()}
+          {this.renderDefaultMarkerFontColorEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
+  private renderDefaultMarkerColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Color" description="Color of the default markers">
+        <EditorString value={theme.defaultMarkerColor} onChange={this.onDefaultMarkerColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderDefaultMarkerFontColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Text color" description="Color of the text on default markers">
+        <EditorString value={theme.defaultMarkerFontColor} onChange={this.onDefaultMarkerFontColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderMarkersPrimarySection() {
+    return (
+      <EditorSection title="Markers (Primary type)" id={ThemeSectionIds.MARKERS_PRIMARY}>
+        <EditorPadding>
+          {this.renderPrimaryMarkerColorEditor()}
+          {this.renderPrimaryMarkerFontColorEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
+  private renderPrimaryMarkerColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Color" description="Color of the primary markers">
+        <EditorString value={theme.primaryMarkerColor} onChange={this.onPrimaryMarkerColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderPrimaryMarkerFontColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Text color" description="Color of the text on primary markers">
+        <EditorString value={theme.primaryMarkerFontColor} onChange={this.onPrimaryMarkerFontColorChanged} />
       </EditorField>
     )
   }
@@ -115,6 +385,10 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
       <Fragment>
         {this.renderFretsSection()}
         {this.renderNutSection()}
+        {this.renderStringsSection()}
+        {this.renderMarkersCommonSection()}
+        {this.renderMarkersDefaultSection()}
+        {this.renderMarkersPrimarySection()}
       </Fragment>
     )
   }

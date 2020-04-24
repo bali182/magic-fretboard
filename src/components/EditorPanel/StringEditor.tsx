@@ -4,7 +4,7 @@ import { EditorField } from './EditorField'
 import { EditorString } from './EditorString'
 import { EditorPadding } from './EditorPadding'
 import { EditorSelect } from './EditorSelect'
-import { ChromaticScaleFromC } from '../FretboardsView/noteUtils'
+import { ChromaticScaleFromC } from '../../noteUtils'
 
 export type StringEditorProps = {
   string: StringModel

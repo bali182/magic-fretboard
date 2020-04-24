@@ -8,22 +8,21 @@ export const defaultTheme: FretboardTheme = {
   fretWireWidth: 8,
   markerRadius: 20,
   markerToNutSpace: 10,
-
   stringColor: '#6c6c6c',
   nutColor: '#6c6c6c',
   fretWireColor: '#999999',
-
   markerFontSize: 22,
   markerFontFamily: 'sans-serif',
-
   defaultMarkerColor: '#27a9e1',
   defaultMarkerFontColor: '#fff',
-
   primaryMarkerColor: '#D66853',
   primaryMarkerFontColor: '#fff',
-
   hollowMarkerStrokeWidth: 8,
   hollowMarkerFontSize: 20,
-
   mutedMarkerStrokeWidth: 8,
+  stringThickness: {
+    type: 'InterpolatedStringThicknessModel',
+    topStringThickness: 7,
+    bottomStringThickness: 3,
+  },
 }
