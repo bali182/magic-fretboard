@@ -72,6 +72,11 @@ export type FretboardTheme = {
   fretWireColor: string
   stringColor: string
 
+  // Dots
+  showDots: boolean
+  dotColor: string
+  dotRadius: number
+
   // Markers
   markerFontSize: number
   markerFontFamily: string

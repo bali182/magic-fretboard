@@ -20,6 +20,9 @@ export const defaultTheme: FretboardTheme = {
   hollowMarkerStrokeWidth: 8,
   hollowMarkerFontSize: 20,
   mutedMarkerStrokeWidth: 8,
+  showDots: true,
+  dotColor: '#6c6c6c',
+  dotRadius: 6,
   stringThickness: {
     type: 'InterpolatedStringThicknessModel',
     topStringThickness: 7,

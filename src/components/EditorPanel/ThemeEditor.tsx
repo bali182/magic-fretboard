@@ -6,6 +6,7 @@ import { EditorSection } from './EditorSection'
 import { EditorString } from './EditorString'
 import { EditorPadding } from './EditorPadding'
 import { StringThicknessEditor } from './StringThicknessEditor'
+import { EditorBoolean } from './EditorCheckbox'
 
 export type ThemeEditorProps = {
   theme: FretboardTheme
@@ -19,6 +20,7 @@ export enum ThemeSectionIds {
   MARKERS_COMMON = 'MARKERS_COMMON',
   MARKERS_DEFAULT = 'MARKERS_DEFAULT',
   MARKERS_PRIMARY = 'MARKERS_PRIMARY',
+  DOTS = 'DOTS',
 }
 
 export class ThemeEditor extends PureComponent<ThemeEditorProps> {
@@ -120,6 +122,18 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
   private onMutedMarkerStrokeWidthChanged = (mutedMarkerStrokeWidth: number) => {
     const { onChange, theme } = this.props
     onChange({ ...theme, mutedMarkerStrokeWidth })
+  }
+  private onShowDotsChanged = (showDots: boolean) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, showDots })
+  }
+  private onDotColorChanged = (dotColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, dotColor })
+  }
+  private onDotRadiusChanged = (dotRadius: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, dotRadius })
   }
 
   private renderNutSection() {
@@ -380,6 +394,45 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
+  private renderDotsSection() {
+    return (
+      <EditorSection title="Dots" id={ThemeSectionIds.DOTS}>
+        <EditorPadding>
+          {this.renderShowDotsEditor()}
+          {this.renderDotColorEditor()}
+          {this.renderDotRadiusEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
+  private renderShowDotsEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Show dots" description="Show dots on the fretboard (on 3, 5, 7, 12th frets)">
+        <EditorBoolean value={theme.showDots} onChange={this.onShowDotsChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderDotColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Color" description="Color of fretboard dots">
+        <EditorString value={theme.dotColor} onChange={this.onDotColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderDotRadiusEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Radius" description="Radius of the dots">
+        <EditorNumber value={theme.dotRadius} onChange={this.onDotRadiusChanged} />
+      </EditorField>
+    )
+  }
+
   render() {
     return (
       <Fragment>
@@ -389,6 +442,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
         {this.renderMarkersCommonSection()}
         {this.renderMarkersDefaultSection()}
         {this.renderMarkersPrimarySection()}
+        {this.renderDotsSection()}
       </Fragment>
     )
   }

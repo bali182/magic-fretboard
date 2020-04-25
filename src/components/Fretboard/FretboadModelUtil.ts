@@ -73,7 +73,7 @@ export class FretboardModelUtil {
     return strings.reduce((map: StringIndexMap, model, index) => ({ ...map, [model.id]: index }), {})
   }
 
-  private getTopOverhang(): number {
+  getTopOverhang(): number {
     const theme = this.getTheme()
     const topStringThickness = this.getTopStringThickness()
     return Math.max(Math.round(topStringThickness / 2), theme.markerRadius)
@@ -293,6 +293,12 @@ export class FretboardModelUtil {
   getStringX2(stringId: string): number {
     // TODO
     return this.getViewportWidth()
+  }
+
+  getStringAreaHeight(): number {
+    const model = this.getModel()
+    const theme = this.getTheme()
+    return model.strings.length * theme.stringSpacing
   }
 
   private linearInterpolation(start: number, end: number, ratio: number): number {
