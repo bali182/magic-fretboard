@@ -45,7 +45,7 @@ export class _FretboardsView extends PureComponent<FretboardsViewProps> {
     return (
       <div className={fretboardsViewStyle}>
         <EditorHeader>
-          <EditorTitle title="Fretboards" />
+          <EditorTitle title="magic-fretboard" />
         </EditorHeader>
         <div className={scrollAreaStyle}>
           {fretboards.map((fretboard, i) => (
