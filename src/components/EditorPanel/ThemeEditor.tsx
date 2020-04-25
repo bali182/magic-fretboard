@@ -114,11 +114,6 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     onChange({ ...theme, hollowMarkerStrokeWidth })
   }
 
-  private onHollowMarkerFontSizeChanged = (hollowMarkerFontSize: number) => {
-    const { onChange, theme } = this.props
-    onChange({ ...theme, hollowMarkerFontSize })
-  }
-
   private onMutedMarkerStrokeWidthChanged = (mutedMarkerStrokeWidth: number) => {
     const { onChange, theme } = this.props
     onChange({ ...theme, mutedMarkerStrokeWidth })
@@ -258,7 +253,6 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
           {this.renderMarkerFontFamilyEditor()}
           {this.renderMarkerToNutSpaceEditor()}
           {this.renderHollowMarkerStrokeWidthEditor()}
-          {this.renderHollowMarkerFontSizeEditor()}
           {this.renderMutedMarkerStrokeWidthEditor()}
         </EditorPadding>
       </EditorSection>
@@ -310,15 +304,6 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
           minValue={1}
           onChange={this.onHollowMarkerStrokeWidthChanged}
         />
-      </EditorField>
-    )
-  }
-
-  private renderHollowMarkerFontSizeEditor() {
-    const { theme } = this.props
-    return (
-      <EditorField name="Hollow font size" description="Font size on markers on unfretted notes in pixels">
-        <EditorNumber value={theme.hollowMarkerFontSize} onChange={this.onHollowMarkerFontSizeChanged} />
       </EditorField>
     )
   }

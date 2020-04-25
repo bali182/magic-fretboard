@@ -85,7 +85,6 @@ export type FretboardTheme = {
   primaryMarkerColor: string
   primaryMarkerFontColor: string
   hollowMarkerStrokeWidth: number
-  hollowMarkerFontSize: number
   mutedMarkerStrokeWidth: number
 }
 

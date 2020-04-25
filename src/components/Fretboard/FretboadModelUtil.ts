@@ -205,9 +205,6 @@ export class FretboardModelUtil {
     if (marker.muted) {
       return null
     }
-    if (marker.fret === 0) {
-      return theme.hollowMarkerFontSize
-    }
     return theme.markerFontSize
   }
 
