@@ -10,7 +10,7 @@ import { nanoid } from 'nanoid'
 import isNil from 'lodash/isNil'
 import { downloadAsPng } from '../../converters/downloadAsPng'
 import { FretboardMenuButton } from './FretboardMenuButton'
-import { faImage, faTimes, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faImage, faTimes, faCog, faPalette } from '@fortawesome/free-solid-svg-icons'
 import { FretboardMenu, Top, Bottom } from './FretboardMenu'
 import { getNoteByStringAndFret } from '../../noteUtils'
 import { isMarkerSelection } from '../Fretboard/TypeGuards'
@@ -140,6 +140,11 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
     })
   }
 
+  private onThemeSelected = () => {
+    const { setSelection } = this.props
+    setSelection({ fretboardId: null, selection: { type: 'themeSelection' } })
+  }
+
   private downloadAsPng = () => {
     downloadAsPng(this.props.model, this.props.theme)
   }
@@ -159,11 +164,8 @@ export class _FretboardView extends PureComponent<FretboardViewProps> {
       <div className={containerStyle}>
         <FretboardMenu>
           <Top>
-            <FretboardMenuButton
-              onClick={this.onFretboardSelectedFromMenu}
-              icon={faCog}
-              tooltip="Fretboard configuration"
-            />
+            <FretboardMenuButton onClick={this.onFretboardSelectedFromMenu} icon={faCog} tooltip="Edit fretboard" />
+            <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} tooltip="Edit theme" />
             <FretboardMenuButton onClick={this.downloadAsPng} icon={faImage} tooltip="Download as PNG" />
           </Top>
           <Bottom>

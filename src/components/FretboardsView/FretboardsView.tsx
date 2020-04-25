@@ -1,16 +1,11 @@
 import React, { PureComponent, Fragment } from 'react'
 import { css } from 'emotion'
 import { FretboardView } from './FretboardView'
-import { FretboardModel, FretboardOrientation } from '../Fretboard/FretboardModel'
+import { FretboardModel } from '../Fretboard/FretboardModel'
 import { MagicFretboardAppState } from '../../state/state'
 import { connect } from 'react-redux'
-import { AddButton } from './AddButton'
 import { addFretboard } from '../../state/fretboards/fretboards.actionCreators'
-import { nanoid } from 'nanoid'
-import { sixGuitarStrings } from '../Fretboard/defaultStrings'
 import { EditorHeader, EditorTitle } from '../EditorPanel/EditorHeader'
-import { FretboardMenuButton } from './FretboardMenuButton'
-import { faPalette } from '@fortawesome/free-solid-svg-icons'
 import { setSelection } from '../../state/selection/selection.actionCreators'
 import { FretboardSeparator } from './FretboardSeparator'
 
@@ -45,33 +40,12 @@ type ActionCreatorProps = {
 }
 
 export class _FretboardsView extends PureComponent<FretboardsViewProps> {
-  private addFretboard = () => {
-    const { addFretboard } = this.props
-    addFretboard({
-      fretboard: {
-        type: 'fretboard',
-        id: nanoid(),
-        firstVisibleFret: 0,
-        lastVisibleFret: 5,
-        markers: [],
-        orientation: FretboardOrientation.RightHanded,
-        strings: sixGuitarStrings,
-      },
-    })
-  }
-
-  private onThemeSelected = () => {
-    const { setSelection } = this.props
-    setSelection({ fretboardId: null, selection: { type: 'themeSelection' } })
-  }
-
   render() {
     const { fretboards } = this.props
     return (
       <div className={fretboardsViewStyle}>
         <EditorHeader>
           <EditorTitle title="Fretboards" />
-          <FretboardMenuButton icon={faPalette} onClick={this.onThemeSelected} tooltip="Edit theme" />
         </EditorHeader>
         <div className={scrollAreaStyle}>
           {fretboards.map((fretboard, i) => (
@@ -80,7 +54,6 @@ export class _FretboardsView extends PureComponent<FretboardsViewProps> {
               {i === fretboards.length - 1 ? null : <FretboardSeparator />}
             </Fragment>
           ))}
-          <AddButton onClick={this.addFretboard} />
         </div>
       </div>
     )
