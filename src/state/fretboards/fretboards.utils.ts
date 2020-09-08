@@ -6,8 +6,8 @@ export function createDefaultFretboard(): FretboardModel {
   return {
     type: 'fretboard',
     id: nanoid(),
-    firstVisibleFret: 0,
-    lastVisibleFret: 5,
+    firstVisibleFret: 3,
+    lastVisibleFret: 8,
     markers: [],
     orientation: FretboardOrientation.RightHanded,
     strings: sixGuitarStrings,

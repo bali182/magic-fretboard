@@ -73,10 +73,27 @@ export class FretboardModelUtil {
     return strings.reduce((map: StringIndexMap, model, index) => ({ ...map, [model.id]: index }), {})
   }
 
+  getFretLabelY(): number {
+    const theme = this.getTheme()
+    if (this.isFretLabelVisible()) {
+      return theme.fretLabelFontSize / 2
+    }
+    return null
+  }
+
+  getFretLabelX(): number {
+    const model = this.getModel()
+    if (this.isFretLabelVisible()) {
+      return this.getFretWireX(model.firstVisibleFret)
+    }
+    return null
+  }
+
   getTopOverhang(): number {
     const theme = this.getTheme()
     const topStringThickness = this.getTopStringThickness()
-    return Math.max(Math.round(topStringThickness / 2), theme.markerRadius)
+    const fretLabelPadding = this.isFretLabelVisible() ? theme.fretLabelFontSize * 1.2 : 0
+    return Math.max(Math.round(topStringThickness / 2), theme.markerRadius, fretLabelPadding)
   }
 
   private getBottomOverhang(): number {
@@ -144,6 +161,10 @@ export class FretboardModelUtil {
 
   isPure(): boolean {
     return this.pure
+  }
+
+  isFretLabelVisible(): boolean {
+    return this.getTheme().showFretLabel && this.getModel().firstVisibleFret > 0
   }
 
   private getMarkerColor(kind: MarkerKind): string {

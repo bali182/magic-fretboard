@@ -15,6 +15,7 @@ import {
   FretboardSelectionHandler,
 } from './FretboardContext'
 import isNil from 'lodash/isNil'
+import { FretLabel } from './FretLabel'
 
 const noop = () => {}
 
@@ -103,6 +104,7 @@ export class Fretboard extends PureComponent<FretboardProps, FretboardState> {
           <Nut />
           <GuitarStrings />
           <Markers />
+          <FretLabel />
         </svg>
       </FretboardContext.Provider>
     )

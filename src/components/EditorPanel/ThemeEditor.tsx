@@ -21,6 +21,7 @@ export enum ThemeSectionIds {
   MARKERS_DEFAULT = 'MARKERS_DEFAULT',
   MARKERS_PRIMARY = 'MARKERS_PRIMARY',
   DOTS = 'DOTS',
+  FIRST_FRET_LABEL = 'FIRST_FRET_LABEL',
 }
 
 export class ThemeEditor extends PureComponent<ThemeEditorProps> {
@@ -129,6 +130,22 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
   private onDotRadiusChanged = (dotRadius: number) => {
     const { onChange, theme } = this.props
     onChange({ ...theme, dotRadius })
+  }
+  private onShowFretLabelChanged = (showFretLabel: boolean) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, showFretLabel })
+  }
+  private onFretLabelColorChanged = (fretLabelColor: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, fretLabelColor })
+  }
+  private onFretLabelFontFamilyChanged = (fretLabelFontFamily: string) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, fretLabelFontFamily })
+  }
+  private onFretLabelFontSizeChanged = (fretLabelFontSize: number) => {
+    const { onChange, theme } = this.props
+    onChange({ ...theme, fretLabelFontSize })
   }
 
   private renderNutSection() {
@@ -418,6 +435,55 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
     )
   }
 
+  private renderFirstFretLabelSection() {
+    return (
+      <EditorSection title="First fret label" id={ThemeSectionIds.FIRST_FRET_LABEL}>
+        <EditorPadding>
+          {this.renderShowFretLabelEditor()}
+          {this.renderFretLabelColorEditor()}
+          {this.renderFretLabelFontFamilyEditor()}
+          {this.renderFretLabelFontSizeEditor()}
+        </EditorPadding>
+      </EditorSection>
+    )
+  }
+
+  private renderShowFretLabelEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Show label" description="Turn on/off the label above the first fret">
+        <EditorBoolean value={theme.showFretLabel} onChange={this.onShowFretLabelChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderFretLabelColorEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Label color" description="The color of the label rendered above first fret">
+        <EditorString value={theme.fretLabelColor} onChange={this.onFretLabelColorChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderFretLabelFontFamilyEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Label font" description="The font of the label">
+        <EditorString value={theme.fretLabelFontFamily} onChange={this.onFretLabelFontFamilyChanged} />
+      </EditorField>
+    )
+  }
+
+  private renderFretLabelFontSizeEditor() {
+    const { theme } = this.props
+    return (
+      <EditorField name="Label size" description="The size of the label">
+        <EditorNumber value={theme.fretLabelFontSize} onChange={this.onFretLabelFontSizeChanged} />
+      </EditorField>
+    )
+  }
+
   render() {
     return (
       <Fragment>
@@ -428,6 +494,7 @@ export class ThemeEditor extends PureComponent<ThemeEditorProps> {
         {this.renderMarkersDefaultSection()}
         {this.renderMarkersPrimarySection()}
         {this.renderDotsSection()}
+        {this.renderFirstFretLabelSection()}
       </Fragment>
     )
   }

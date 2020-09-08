@@ -22,6 +22,10 @@ export const defaultTheme: FretboardTheme = {
   showDots: true,
   dotColor: '#6c6c6c',
   dotRadius: 6,
+  showFretLabel: true,
+  fretLabelColor: '#333',
+  fretLabelFontFamily: 'sans-serif',
+  fretLabelFontSize: 20,
   stringThickness: {
     type: 'InterpolatedStringThicknessModel',
     topStringThickness: 7,

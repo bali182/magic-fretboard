@@ -86,6 +86,11 @@ export type FretboardTheme = {
   primaryMarkerFontColor: string
   hollowMarkerStrokeWidth: number
   mutedMarkerStrokeWidth: number
+  // Fret label
+  showFretLabel: boolean
+  fretLabelColor: string
+  fretLabelFontFamily: string
+  fretLabelFontSize: number
 }
 
 export type FretboardModel = {
